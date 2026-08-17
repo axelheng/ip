@@ -1,16 +1,16 @@
 import java.util.Scanner;
 
 /**
- * A simple chatbot that stores tasks, displays them on request, and exits
- * when asked.
+ * A simple chatbot that stores typed tasks, displays them on request, and
+ * exits when asked.
  */
 public class Jarvis {
     private static final String SEPARATOR = "____________________________________________________________";
 
     /**
      * Prints Jarvis's introductory greeting, then processes commands until the
-     * user enters {@code bye}. Commands other than {@code list}, {@code mark},
-     * {@code unmark} and {@code bye} are stored as tasks in memory.
+     * user enters {@code bye}. Tasks are created with {@code todo},
+     * {@code deadline}, or {@code event} commands.
      *
      * @param args command-line arguments, which are not used
      */
@@ -38,8 +38,7 @@ public class Jarvis {
             if (command.equals("list")) {
                 System.out.println("     Here are the tasks in your list:");
                 for (int i = 0; i < taskCount; i++) {
-                    System.out.println("     " + (i + 1) + ".[" + tasks[i].getStatusIcon()
-                            + "] " + tasks[i].getDescription());
+                    System.out.println("     " + (i + 1) + "." + tasks[i]);
                 }
             } else if (command.startsWith("mark ")) {
                 String taskNumberText = command.substring("mark ".length()).trim();
@@ -72,12 +71,45 @@ public class Jarvis {
                     System.out.println("     Please provide a valid task number.");
                 }
             } else {
-                tasks[taskCount] = new Task(command);
+                Task task = parseTask(command);
+                tasks[taskCount] = task;
                 taskCount++;
-                System.out.println("     added: " + command);
+                System.out.println("     Got it. I've added this task:");
+                System.out.println("       " + task);
+                System.out.println("     Now you have " + taskCount + " tasks in the list.");
             }
 
             System.out.println(SEPARATOR);
         }
+    }
+
+    /** Converts a task-creation command into its corresponding task subtype. */
+    private static Task parseTask(String command) {
+        if (command.startsWith("todo ")) {
+            return new Todo(command.substring("todo ".length()));
+        }
+
+        if (command.startsWith("deadline ")) {
+            String remainder = command.substring("deadline ".length());
+            int byIndex = remainder.indexOf(" /by ");
+            if (byIndex >= 0) {
+                return new Deadline(remainder.substring(0, byIndex),
+                        remainder.substring(byIndex + " /by ".length()));
+            }
+        }
+
+        if (command.startsWith("event ")) {
+            String remainder = command.substring("event ".length());
+            int fromIndex = remainder.indexOf(" /from ");
+            int toIndex = remainder.indexOf(" /to ", fromIndex + 1);
+            if (fromIndex >= 0 && toIndex >= 0) {
+                return new Event(remainder.substring(0, fromIndex),
+                        remainder.substring(fromIndex + " /from ".length(), toIndex),
+                        remainder.substring(toIndex + " /to ".length()));
+            }
+        }
+
+        // Preserve the original behavior for an untyped command.
+        return new Todo(command);
     }
 }

@@ -9,8 +9,8 @@ Unless the user says otherwise, assume that you are assisting a student working 
 # Student profile
 
 * Prior knowledge: Basic Java and OOP concepts.
-* Level of programming experience: [to be filled]
-* IDE and level of expertise: [to be filled]
+* Level of programming experience: year 2 computer science student
+* IDE and level of expertise: IntelliJ, I have never used IntelliJ
 
 # Guidance for interacting with users
 
@@ -33,3 +33,7 @@ Ensure that Java 25 is used when running the application or build tasks. On macO
 Use lightweight tags unless the user requests an annotated tag.
 When proposing or creating a commit message, include enough detail to explain the rationale for the change.
 Do not commit or push unless explicitly asked.
+
+## UI testing after code updates
+
+After every code update, review `test/ui-test-plan.md` and update it when the changed behavior requires new or revised UI test coverage. Then invoke the project-specific `test-ui` skill to run the plan. The test session must be recorded in the response; if a test fails, stop immediately and report the actual and expected output.

@@ -1,6 +1,4 @@
-/**
- * Represents a task and whether it has been completed.
- */
+/** Represents a task and whether it has been completed. */
 public class Task {
     private final String description;
     private boolean isDone;
@@ -41,5 +39,24 @@ public class Task {
      */
     public String getDescription() {
         return description;
+    }
+
+    /**
+     * Returns the one-letter marker used for this task type.
+     *
+     * @return {@code T} for a basic task
+     */
+    protected String getTypeIcon() {
+        return "T";
+    }
+
+    /**
+     * Returns the task in the format used by the command-line interface.
+     *
+     * @return the type marker, completion marker, and description
+     */
+    @Override
+    public String toString() {
+        return "[" + getTypeIcon() + "][" + getStatusIcon() + "] " + description;
     }
 }
