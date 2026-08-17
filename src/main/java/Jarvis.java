@@ -9,8 +9,8 @@ public class Jarvis {
 
     /**
      * Prints Jarvis's introductory greeting, then processes commands until the
-     * user enters {@code bye}. Commands other than {@code list}, {@code mark}
-     * and {@code bye} are stored as tasks in memory.
+     * user enters {@code bye}. Commands other than {@code list}, {@code mark},
+     * {@code unmark} and {@code bye} are stored as tasks in memory.
      *
      * @param args command-line arguments, which are not used
      */
@@ -51,6 +51,21 @@ public class Jarvis {
                         completed[taskIndex] = true;
                         System.out.println("     Nice! I've marked this task as done:");
                         System.out.println("       [X] " + tasks[taskIndex]);
+                    } else {
+                        System.out.println("     There is no task with that number.");
+                    }
+                } catch (NumberFormatException exception) {
+                    System.out.println("     Please provide a valid task number.");
+                }
+            } else if (command.startsWith("unmark ")) {
+                String taskNumberText = command.substring("unmark ".length()).trim();
+                try {
+                    int taskNumber = Integer.parseInt(taskNumberText);
+                    if (taskNumber >= 1 && taskNumber <= taskCount) {
+                        int taskIndex = taskNumber - 1;
+                        completed[taskIndex] = false;
+                        System.out.println("     OK, I've marked this task as not done yet:");
+                        System.out.println("       [ ] " + tasks[taskIndex]);
                     } else {
                         System.out.println("     There is no task with that number.");
                     }
