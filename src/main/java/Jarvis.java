@@ -22,8 +22,7 @@ public class Jarvis {
         System.out.println(SEPARATOR);
 
         Scanner scanner = new Scanner(System.in);
-        String[] tasks = new String[100];
-        boolean[] completed = new boolean[100];
+        Task[] tasks = new Task[100];
         int taskCount = 0;
 
         while (scanner.hasNextLine()) {
@@ -39,8 +38,8 @@ public class Jarvis {
             if (command.equals("list")) {
                 System.out.println("     Here are the tasks in your list:");
                 for (int i = 0; i < taskCount; i++) {
-                    String status = completed[i] ? "X" : " ";
-                    System.out.println("     " + (i + 1) + ".[" + status + "] " + tasks[i]);
+                    System.out.println("     " + (i + 1) + ".[" + tasks[i].getStatusIcon()
+                            + "] " + tasks[i].getDescription());
                 }
             } else if (command.startsWith("mark ")) {
                 String taskNumberText = command.substring("mark ".length()).trim();
@@ -48,9 +47,9 @@ public class Jarvis {
                     int taskNumber = Integer.parseInt(taskNumberText);
                     if (taskNumber >= 1 && taskNumber <= taskCount) {
                         int taskIndex = taskNumber - 1;
-                        completed[taskIndex] = true;
+                        tasks[taskIndex].markAsDone();
                         System.out.println("     Nice! I've marked this task as done:");
-                        System.out.println("       [X] " + tasks[taskIndex]);
+                        System.out.println("       [X] " + tasks[taskIndex].getDescription());
                     } else {
                         System.out.println("     There is no task with that number.");
                     }
@@ -63,9 +62,9 @@ public class Jarvis {
                     int taskNumber = Integer.parseInt(taskNumberText);
                     if (taskNumber >= 1 && taskNumber <= taskCount) {
                         int taskIndex = taskNumber - 1;
-                        completed[taskIndex] = false;
+                        tasks[taskIndex].markAsNotDone();
                         System.out.println("     OK, I've marked this task as not done yet:");
-                        System.out.println("       [ ] " + tasks[taskIndex]);
+                        System.out.println("       [ ] " + tasks[taskIndex].getDescription());
                     } else {
                         System.out.println("     There is no task with that number.");
                     }
@@ -73,7 +72,7 @@ public class Jarvis {
                     System.out.println("     Please provide a valid task number.");
                 }
             } else {
-                tasks[taskCount] = command;
+                tasks[taskCount] = new Task(command);
                 taskCount++;
                 System.out.println("     added: " + command);
             }
