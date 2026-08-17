@@ -9,8 +9,8 @@ public class Jarvis {
 
     /**
      * Prints Jarvis's introductory greeting, then processes commands until the
-     * user enters {@code bye}. Commands other than {@code list} and
-     * {@code bye} are stored as tasks in memory.
+     * user enters {@code bye}. Commands other than {@code list}, {@code mark}
+     * and {@code bye} are stored as tasks in memory.
      *
      * @param args command-line arguments, which are not used
      */
@@ -23,6 +23,7 @@ public class Jarvis {
 
         Scanner scanner = new Scanner(System.in);
         String[] tasks = new String[100];
+        boolean[] completed = new boolean[100];
         int taskCount = 0;
 
         while (scanner.hasNextLine()) {
@@ -36,8 +37,25 @@ public class Jarvis {
             }
 
             if (command.equals("list")) {
+                System.out.println("     Here are the tasks in your list:");
                 for (int i = 0; i < taskCount; i++) {
-                    System.out.println("     " + (i + 1) + ". " + tasks[i]);
+                    String status = completed[i] ? "X" : " ";
+                    System.out.println("     " + (i + 1) + ".[" + status + "] " + tasks[i]);
+                }
+            } else if (command.startsWith("mark ")) {
+                String taskNumberText = command.substring("mark ".length()).trim();
+                try {
+                    int taskNumber = Integer.parseInt(taskNumberText);
+                    if (taskNumber >= 1 && taskNumber <= taskCount) {
+                        int taskIndex = taskNumber - 1;
+                        completed[taskIndex] = true;
+                        System.out.println("     Nice! I've marked this task as done:");
+                        System.out.println("       [X] " + tasks[taskIndex]);
+                    } else {
+                        System.out.println("     There is no task with that number.");
+                    }
+                } catch (NumberFormatException exception) {
+                    System.out.println("     Please provide a valid task number.");
                 }
             } else {
                 tasks[taskCount] = command;
