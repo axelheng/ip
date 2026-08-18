@@ -40,43 +40,45 @@ public class Jarvis {
                 for (int i = 0; i < taskCount; i++) {
                     System.out.println("     " + (i + 1) + "." + tasks[i]);
                 }
-            } else if (command.startsWith("mark ")) {
-                String taskNumberText = command.substring("mark ".length()).trim();
+            } else if (command.equals("mark") || command.startsWith("mark ")) {
                 try {
-                    int taskNumber = Integer.parseInt(taskNumberText);
+                    int taskNumber = parseTaskNumber(command, "mark");
                     if (taskNumber >= 1 && taskNumber <= taskCount) {
                         int taskIndex = taskNumber - 1;
                         tasks[taskIndex].markAsDone();
                         System.out.println("     Nice! I've marked this task as done:");
                         System.out.println("       [X] " + tasks[taskIndex].getDescription());
                     } else {
-                        System.out.println("     There is no task with that number.");
+                        throw new JarvisException("There is no task with that number.");
                     }
-                } catch (NumberFormatException exception) {
-                    System.out.println("     Please provide a valid task number.");
+                } catch (JarvisException exception) {
+                    printError(exception);
                 }
-            } else if (command.startsWith("unmark ")) {
-                String taskNumberText = command.substring("unmark ".length()).trim();
+            } else if (command.equals("unmark") || command.startsWith("unmark ")) {
                 try {
-                    int taskNumber = Integer.parseInt(taskNumberText);
+                    int taskNumber = parseTaskNumber(command, "unmark");
                     if (taskNumber >= 1 && taskNumber <= taskCount) {
                         int taskIndex = taskNumber - 1;
                         tasks[taskIndex].markAsNotDone();
                         System.out.println("     OK, I've marked this task as not done yet:");
                         System.out.println("       [ ] " + tasks[taskIndex].getDescription());
                     } else {
-                        System.out.println("     There is no task with that number.");
+                        throw new JarvisException("There is no task with that number.");
                     }
-                } catch (NumberFormatException exception) {
-                    System.out.println("     Please provide a valid task number.");
+                } catch (JarvisException exception) {
+                    printError(exception);
                 }
             } else {
-                Task task = parseTask(command);
-                tasks[taskCount] = task;
-                taskCount++;
-                System.out.println("     Got it. I've added this task:");
-                System.out.println("       " + task);
-                System.out.println("     Now you have " + taskCount + " tasks in the list.");
+                try {
+                    Task task = parseTask(command);
+                    tasks[taskCount] = task;
+                    taskCount++;
+                    System.out.println("     Got it. I've added this task:");
+                    System.out.println("       " + task);
+                    System.out.println("     Now you have " + taskCount + " tasks in the list.");
+                } catch (JarvisException exception) {
+                    printError(exception);
+                }
             }
 
             System.out.println(SEPARATOR);
@@ -84,18 +86,21 @@ public class Jarvis {
     }
 
     /** Converts a task-creation command into its corresponding task subtype. */
-    private static Task parseTask(String command) {
-        if (command.startsWith("todo ")) {
-            return new Todo(command.substring("todo ".length()));
+    private static Task parseTask(String command) throws JarvisException {
+        if (command.equals("todo") || command.startsWith("todo ")) {
+            String description = command.equals("todo") ? "" : command.substring("todo ".length());
+            return new Todo(requireDescription(description, "todo"));
         }
 
         if (command.startsWith("deadline ")) {
             String remainder = command.substring("deadline ".length());
             int byIndex = remainder.indexOf(" /by ");
             if (byIndex >= 0) {
-                return new Deadline(remainder.substring(0, byIndex),
-                        remainder.substring(byIndex + " /by ".length()));
+                String description = requireDescription(remainder.substring(0, byIndex), "deadline");
+                String by = requirePart(remainder.substring(byIndex + " /by ".length()), "deadline date");
+                return new Deadline(description, by);
             }
+            throw new JarvisException("A deadline needs a description and a date, for example: deadline report /by Friday");
         }
 
         if (command.startsWith("event ")) {
@@ -103,13 +108,42 @@ public class Jarvis {
             int fromIndex = remainder.indexOf(" /from ");
             int toIndex = remainder.indexOf(" /to ", fromIndex + 1);
             if (fromIndex >= 0 && toIndex >= 0) {
-                return new Event(remainder.substring(0, fromIndex),
-                        remainder.substring(fromIndex + " /from ".length(), toIndex),
-                        remainder.substring(toIndex + " /to ".length()));
+                String description = requireDescription(remainder.substring(0, fromIndex), "event");
+                String from = requirePart(remainder.substring(fromIndex + " /from ".length(), toIndex), "event start time");
+                String to = requirePart(remainder.substring(toIndex + " /to ".length()), "event end time");
+                return new Event(description, from, to);
             }
+            throw new JarvisException("An event needs a description, start time, and end time, for example: event meeting /from 2pm /to 3pm");
         }
 
-        // Preserve the original behavior for an untyped command.
-        return new Todo(command);
+        throw new JarvisException("I don't recognize that command. Try todo, deadline, event, list, mark, unmark, or bye.");
+    }
+
+    private static int parseTaskNumber(String command, String action) throws JarvisException {
+        String taskNumberText = command.substring(action.length()).trim();
+        if (taskNumberText.isEmpty()) {
+            throw new JarvisException("Please provide a task number after " + action + ".");
+        }
+        try {
+            return Integer.parseInt(taskNumberText);
+        } catch (NumberFormatException exception) {
+            throw new JarvisException("Please provide a valid task number after " + action + ".");
+        }
+    }
+
+    private static String requireDescription(String description, String command) throws JarvisException {
+        return requirePart(description, command + " description");
+    }
+
+    private static String requirePart(String value, String partName) throws JarvisException {
+        String trimmedValue = value.trim();
+        if (trimmedValue.isEmpty()) {
+            throw new JarvisException("A " + partName + " cannot be empty.");
+        }
+        return trimmedValue;
+    }
+
+    private static void printError(JarvisException exception) {
+        System.out.println("     Oops: " + exception.getMessage());
     }
 }
