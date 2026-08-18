@@ -1,7 +1,7 @@
 /** Represents a task and whether it has been completed. */
 public class Task {
     private final String description;
-    private boolean isDone;
+    private TaskStatus status;
 
     /**
      * Creates a new incomplete task.
@@ -10,17 +10,17 @@ public class Task {
      */
     public Task(String description) {
         this.description = description;
-        this.isDone = false;
+        this.status = TaskStatus.NOT_DONE;
     }
 
     /** Marks this task as done. */
     public void markAsDone() {
-        isDone = true;
+        status = TaskStatus.DONE;
     }
 
     /** Marks this task as not done. */
     public void markAsNotDone() {
-        isDone = false;
+        status = TaskStatus.NOT_DONE;
     }
 
     /**
@@ -29,7 +29,7 @@ public class Task {
      * @return {@code X} for a done task, otherwise a blank space
      */
     public String getStatusIcon() {
-        return isDone ? "X" : " ";
+        return status == TaskStatus.DONE ? "X" : " ";
     }
 
     /**
