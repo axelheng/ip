@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -10,7 +12,8 @@ public class Jarvis {
     /**
      * Prints Jarvis's introductory greeting, then processes commands until the
      * user enters {@code bye}. Tasks are created with {@code todo},
-     * {@code deadline}, or {@code event} commands.
+     * {@code deadline}, or {@code event} commands and can be removed with
+     * {@code delete}.
      *
      * @param args command-line arguments, which are not used
      */
@@ -22,8 +25,7 @@ public class Jarvis {
         System.out.println(SEPARATOR);
 
         Scanner scanner = new Scanner(System.in);
-        Task[] tasks = new Task[100];
-        int taskCount = 0;
+        List<Task> tasks = new ArrayList<>();
 
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();
@@ -37,17 +39,30 @@ public class Jarvis {
 
             if (command.equals("list")) {
                 System.out.println("     Here are the tasks in your list:");
-                for (int i = 0; i < taskCount; i++) {
-                    System.out.println("     " + (i + 1) + "." + tasks[i]);
+                for (int i = 0; i < tasks.size(); i++) {
+                    System.out.println("     " + (i + 1) + "." + tasks.get(i));
+                }
+            } else if (command.equals("delete") || command.startsWith("delete ")) {
+                try {
+                    int taskNumber = parseTaskNumber(command, "delete");
+                    if (taskNumber < 1 || taskNumber > tasks.size()) {
+                        throw new JarvisException("There is no task with that number.");
+                    }
+                    Task removedTask = tasks.remove(taskNumber - 1);
+                    System.out.println("     Noted. I've removed this task:");
+                    System.out.println("       " + removedTask);
+                    System.out.println("     Now you have " + tasks.size() + " tasks in the list.");
+                } catch (JarvisException exception) {
+                    printError(exception);
                 }
             } else if (command.equals("mark") || command.startsWith("mark ")) {
                 try {
                     int taskNumber = parseTaskNumber(command, "mark");
-                    if (taskNumber >= 1 && taskNumber <= taskCount) {
+                    if (taskNumber >= 1 && taskNumber <= tasks.size()) {
                         int taskIndex = taskNumber - 1;
-                        tasks[taskIndex].markAsDone();
+                        tasks.get(taskIndex).markAsDone();
                         System.out.println("     Nice! I've marked this task as done:");
-                        System.out.println("       [X] " + tasks[taskIndex].getDescription());
+                        System.out.println("       [X] " + tasks.get(taskIndex).getDescription());
                     } else {
                         throw new JarvisException("There is no task with that number.");
                     }
@@ -57,11 +72,11 @@ public class Jarvis {
             } else if (command.equals("unmark") || command.startsWith("unmark ")) {
                 try {
                     int taskNumber = parseTaskNumber(command, "unmark");
-                    if (taskNumber >= 1 && taskNumber <= taskCount) {
+                    if (taskNumber >= 1 && taskNumber <= tasks.size()) {
                         int taskIndex = taskNumber - 1;
-                        tasks[taskIndex].markAsNotDone();
+                        tasks.get(taskIndex).markAsNotDone();
                         System.out.println("     OK, I've marked this task as not done yet:");
-                        System.out.println("       [ ] " + tasks[taskIndex].getDescription());
+                        System.out.println("       [ ] " + tasks.get(taskIndex).getDescription());
                     } else {
                         throw new JarvisException("There is no task with that number.");
                     }
@@ -71,11 +86,10 @@ public class Jarvis {
             } else {
                 try {
                     Task task = parseTask(command);
-                    tasks[taskCount] = task;
-                    taskCount++;
+                    tasks.add(task);
                     System.out.println("     Got it. I've added this task:");
                     System.out.println("       " + task);
-                    System.out.println("     Now you have " + taskCount + " tasks in the list.");
+                    System.out.println("     Now you have " + tasks.size() + " tasks in the list.");
                 } catch (JarvisException exception) {
                     printError(exception);
                 }
@@ -116,7 +130,7 @@ public class Jarvis {
             throw new JarvisException("An event needs a description, start time, and end time, for example: event meeting /from 2pm /to 3pm");
         }
 
-        throw new JarvisException("I don't recognize that command. Try todo, deadline, event, list, mark, unmark, or bye.");
+        throw new JarvisException("I don't recognize that command. Try todo, deadline, event, list, mark, unmark, delete, or bye.");
     }
 
     private static int parseTaskNumber(String command, String action) throws JarvisException {
