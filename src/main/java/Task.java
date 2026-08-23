@@ -23,6 +23,11 @@ public class Task {
         status = TaskStatus.NOT_DONE;
     }
 
+    /** Restores the completion status of a task loaded from storage. */
+    void restoreStatus(boolean isDone) {
+        status = isDone ? TaskStatus.DONE : TaskStatus.NOT_DONE;
+    }
+
     /**
      * Returns the status icon used when displaying this task.
      *

@@ -25,7 +25,8 @@ public class Jarvis {
         System.out.println(SEPARATOR);
 
         Scanner scanner = new Scanner(System.in);
-        List<Task> tasks = new ArrayList<>();
+        TaskStorage storage = new TaskStorage();
+        List<Task> tasks = storage.load();
 
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();
@@ -49,6 +50,7 @@ public class Jarvis {
                         throw new JarvisException("There is no task with that number.");
                     }
                     Task removedTask = tasks.remove(taskNumber - 1);
+                    storage.save(tasks);
                     System.out.println("     Noted. I've removed this task:");
                     System.out.println("       " + removedTask);
                     System.out.println("     Now you have " + tasks.size() + " tasks in the list.");
@@ -61,6 +63,7 @@ public class Jarvis {
                     if (taskNumber >= 1 && taskNumber <= tasks.size()) {
                         int taskIndex = taskNumber - 1;
                         tasks.get(taskIndex).markAsDone();
+                        storage.save(tasks);
                         System.out.println("     Nice! I've marked this task as done:");
                         System.out.println("       [X] " + tasks.get(taskIndex).getDescription());
                     } else {
@@ -75,6 +78,7 @@ public class Jarvis {
                     if (taskNumber >= 1 && taskNumber <= tasks.size()) {
                         int taskIndex = taskNumber - 1;
                         tasks.get(taskIndex).markAsNotDone();
+                        storage.save(tasks);
                         System.out.println("     OK, I've marked this task as not done yet:");
                         System.out.println("       [ ] " + tasks.get(taskIndex).getDescription());
                     } else {
@@ -87,6 +91,7 @@ public class Jarvis {
                 try {
                     Task task = parseTask(command);
                     tasks.add(task);
+                    storage.save(tasks);
                     System.out.println("     Got it. I've added this task:");
                     System.out.println("       " + task);
                     System.out.println("     Now you have " + tasks.size() + " tasks in the list.");
