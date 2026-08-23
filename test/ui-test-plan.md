@@ -1,5 +1,15 @@
 # UI Test Plan
 
+## Save and load tasks
+
+**Aim:** Verify that tasks are saved after changes and loaded when Jarvis starts again.
+
+**Command:** `java -cp out/production/ip Jarvis`
+
+**Inputs:** `todo remember this`, `bye`; run the command again with `list`, `bye`.
+
+**Expected output:** The second run lists `1.[T][ ] remember this` before exiting.
+
 Add one `##` section per console UI test. Tests run in document order and stop at the first failure.
 
 ## Create and list typed tasks
