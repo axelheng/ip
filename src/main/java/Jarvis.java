@@ -1,4 +1,5 @@
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -117,7 +118,11 @@ public class Jarvis {
             if (byIndex >= 0) {
                 String description = requireDescription(remainder.substring(0, byIndex), "deadline");
                 String by = requirePart(remainder.substring(byIndex + " /by ".length()), "deadline date");
-                return new Deadline(description, by);
+                try {
+                    return new Deadline(description, LocalDate.parse(by));
+                } catch (DateTimeParseException exception) {
+                    throw new JarvisException("A deadline date must use yyyy-mm-dd, for example: 2019-10-15");
+                }
             }
             throw new JarvisException("A deadline needs a description and a date, for example: deadline report /by Friday");
         }

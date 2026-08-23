@@ -24,7 +24,7 @@ java -cp out/production/ip Jarvis
 **Inputs:**
 ```text
 todo borrow book
-deadline return book /by Sunday
+deadline return book /by 2019-12-02
 event project meeting /from Mon 2pm /to 4pm
 list
 bye
@@ -44,7 +44,7 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
      Got it. I've added this task:
-       [D][ ] return book (by: Sunday)
+       [D][ ] return book (by: Dec 02 2019)
      Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -55,7 +55,7 @@ ____________________________________________________________
 ____________________________________________________________
      Here are the tasks in your list:
      1.[T][ ] borrow book
-     2.[D][ ] return book (by: Sunday)
+     2.[D][ ] return book (by: Dec 02 2019)
      3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
 ____________________________________________________________
 ____________________________________________________________
@@ -266,7 +266,7 @@ java -cp out/production/ip Jarvis
 **Inputs:**
 ```text
 todo read book
-deadline return book /by June 6th
+deadline return book /by 2019-06-06
 event project meeting /from Aug 6th 2pm /to 4pm
 todo join sports club
 todo borrow book
@@ -292,7 +292,7 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
      Got it. I've added this task:
-       [D][ ] return book (by: June 6th)
+       [D][ ] return book (by: Jun 06 2019)
      Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
