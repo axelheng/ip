@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -48,7 +49,7 @@ public class TaskStorage {
         String type = task instanceof Deadline ? "D" : task instanceof Event ? "E" : "T";
         String details = "";
         if (task instanceof Deadline) {
-            details = ((Deadline) task).getBy();
+            details = ((Deadline) task).getBy().toString();
         } else if (task instanceof Event) {
             Event event = (Event) task;
             details = event.getFrom() + " " + event.getTo();
@@ -67,7 +68,7 @@ public class TaskStorage {
             String description = parts[2].trim();
             Task task;
             if (parts[0].equals("D") && parts.length == 4 && !parts[3].trim().isEmpty()) {
-                task = new Deadline(description, parts[3].trim());
+                task = new Deadline(description, LocalDate.parse(parts[3].trim()));
             } else if (parts[0].equals("E") && parts.length == 4) {
                 String eventDetails = parts[3].trim();
                 int separator = eventDetails.lastIndexOf(' ');
