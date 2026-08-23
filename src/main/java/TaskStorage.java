@@ -4,12 +4,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 /** Loads and saves Jarvis tasks in a file relative to the project directory. */
 public class TaskStorage {
-    private static final Path DATA_FILE = Paths.get("data", "duke.txt");
+    private static final Path DATA_FILE = Paths.get("data", "jarvis.txt");
 
     /** Loads all valid tasks from the data file, returning an empty list if it is unavailable. */
     public List<Task> load() {
@@ -48,32 +47,35 @@ public class TaskStorage {
     private String formatTask(Task task) {
         String type = task instanceof Deadline ? "D" : task instanceof Event ? "E" : "T";
         String details = "";
-        String encodedDescription = encode(task.getDescription());
         if (task instanceof Deadline) {
-            details = task.toString();
-            details = encode(details.substring(details.indexOf("(by: ") + 6, details.length() - 1));
+            details = ((Deadline) task).getBy();
         } else if (task instanceof Event) {
-            details = task.toString();
-            int fromStart = details.indexOf("(from: ") + 7;
-            int toStart = details.indexOf(" to: ", fromStart);
-            details = encode(details.substring(fromStart, toStart)) + "|" + encode(details.substring(toStart + 5, details.length() - 1));
+            Event event = (Event) task;
+            details = event.getFrom() + " " + event.getTo();
         }
-        return type + "|" + (task.getStatusIcon().equals("X") ? "1" : "0") + "|" + encodedDescription + "|" + details;
+        return type + " | " + (task.getStatusIcon().equals("X") ? "1" : "0") + " | "
+                + task.getDescription() + (details.isEmpty() ? "" : " | " + details);
     }
 
     private Task parseLine(String line) {
         try {
-            String[] parts = line.split("\\|", -1);
-            if (parts.length < 4 || (!parts[0].equals("T") && !parts[0].equals("D") && !parts[0].equals("E"))) {
+            String[] parts = line.split("\\s*\\|\\s*", -1);
+            if (parts.length < 3 || (!parts[0].equals("T") && !parts[0].equals("D") && !parts[0].equals("E"))
+                    || (!parts[1].equals("0") && !parts[1].equals("1")) || parts[2].trim().isEmpty()) {
                 return null;
             }
-            String description = decode(parts[2]);
+            String description = parts[2].trim();
             Task task;
-            if (parts[0].equals("D") && parts.length == 4) {
-                task = new Deadline(description, decode(parts[3]));
-            } else if (parts[0].equals("E") && parts.length == 5) {
-                task = new Event(description, decode(parts[3]), decode(parts[4]));
-            } else if (parts[0].equals("T") && parts.length == 4 && parts[3].isEmpty()) {
+            if (parts[0].equals("D") && parts.length == 4 && !parts[3].trim().isEmpty()) {
+                task = new Deadline(description, parts[3].trim());
+            } else if (parts[0].equals("E") && parts.length == 4) {
+                String eventDetails = parts[3].trim();
+                int separator = eventDetails.lastIndexOf(' ');
+                if (separator <= 0 || separator == eventDetails.length() - 1) {
+                    return null;
+                }
+                task = new Event(description, eventDetails.substring(0, separator), eventDetails.substring(separator + 1));
+            } else if (parts[0].equals("T") && parts.length == 3) {
                 task = new Todo(description);
             } else {
                 return null;
@@ -85,11 +87,4 @@ public class TaskStorage {
         }
     }
 
-    private String encode(String value) {
-        return Base64.getEncoder().encodeToString(value.getBytes(StandardCharsets.UTF_8));
-    }
-
-    private String decode(String value) {
-        return new String(Base64.getDecoder().decode(value), StandardCharsets.UTF_8);
-    }
 }

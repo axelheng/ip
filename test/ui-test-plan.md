@@ -2,13 +2,13 @@
 
 ## Save and load tasks
 
-**Aim:** Verify that tasks are saved after changes and loaded when Jarvis starts again.
+**Aim:** Verify that tasks are saved in the readable Jarvis format and loaded when Jarvis starts again.
 
 **Command:** `java -cp out/production/ip Jarvis`
 
 **Inputs:** `todo remember this`, `bye`; run the command again with `list`, `bye`.
 
-**Expected output:** The second run lists `1.[T][ ] remember this` before exiting.
+**Expected output:** The second run lists `1.[T][ ] remember this` before exiting, and `data/jarvis.txt` contains `T | 0 | remember this`.
 
 Add one `##` section per console UI test. Tests run in document order and stop at the first failure.
 
