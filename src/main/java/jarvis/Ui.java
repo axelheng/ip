@@ -51,6 +51,17 @@ public class Ui {
         }
     }
 
+    /** Displays tasks whose descriptions contain the supplied keyword. */
+    public void showMatchingTasks(List<Task> tasks, String keyword) {
+        System.out.println("     Here are the matching tasks in your list:");
+        String lowerCaseKeyword = keyword.toLowerCase();
+        for (int i = 0; i < tasks.size(); i++) {
+            if (tasks.get(i).getDescription().toLowerCase().contains(lowerCaseKeyword)) {
+                System.out.println("     " + (i + 1) + "." + tasks.get(i));
+            }
+        }
+    }
+
     /** Displays an error message caused by invalid user input. */
     public void showError(JarvisException exception) {
         System.out.println("     Oops: " + exception.getMessage());

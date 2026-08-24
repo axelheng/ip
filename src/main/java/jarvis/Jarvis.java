@@ -41,6 +41,13 @@ public class Jarvis {
 
             if (command.equals("list")) {
                 ui.showTasks(tasks);
+            } else if (command.equals("find") || command.startsWith("find ")) {
+                String keyword = command.substring("find".length()).trim();
+                if (keyword.isEmpty()) {
+                    ui.showError(new JarvisException("Please provide a keyword after find."));
+                } else {
+                    ui.showMatchingTasks(tasks, keyword);
+                }
             } else if (command.equals("delete") || command.startsWith("delete ")) {
                 try {
                     int taskNumber = parseTaskNumber(command, "delete");
@@ -137,7 +144,8 @@ public class Jarvis {
             throw new JarvisException("An event needs a description, start time, and end time, for example: event meeting /from 2pm /to 3pm");
         }
 
-        throw new JarvisException("I don't recognize that command. Try todo, deadline, event, list, mark, unmark, delete, or bye.");
+        throw new JarvisException("I don't recognize that command. Try todo, deadline, event, list, find, mark, "
+                + "unmark, delete, or bye.");
     }
 
     private static int parseTaskNumber(String command, String action) throws JarvisException {
