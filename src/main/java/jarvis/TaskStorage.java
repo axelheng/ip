@@ -11,6 +11,7 @@ import java.util.List;
 
 /** Loads and saves Jarvis tasks in a file relative to the project directory. */
 public class TaskStorage {
+    /** Location of the human-readable task database. */
     private static final Path DATA_FILE = Paths.get("data", "jarvis.txt");
 
     /** Loads all valid tasks from the data file, returning an empty list if it is unavailable. */
@@ -47,6 +48,7 @@ public class TaskStorage {
         }
     }
 
+    /** Converts a task into one line of the storage format. */
     private String formatTask(Task task) {
         String type = task instanceof Deadline ? "D" : task instanceof Event ? "E" : "T";
         String details = "";
@@ -60,6 +62,7 @@ public class TaskStorage {
                 + task.getDescription() + (details.isEmpty() ? "" : " | " + details);
     }
 
+    /** Converts one storage line into a task, or returns {@code null} when invalid. */
     private Task parseLine(String line) {
         try {
             String[] parts = line.split("\\s*\\|\\s*", -1);
