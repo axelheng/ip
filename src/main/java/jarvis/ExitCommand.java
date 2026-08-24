@@ -1,3 +1,5 @@
+package jarvis;
+
 import java.util.List;
 
 /** Represents the command that ends the Jarvis session. */

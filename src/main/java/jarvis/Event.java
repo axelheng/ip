@@ -1,3 +1,5 @@
+package jarvis;
+
 /** Represents a task with a stated start and end date or time. */
 public class Event extends Task {
     private final String from;

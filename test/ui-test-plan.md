@@ -4,7 +4,7 @@
 
 **Aim:** Verify that tasks are saved in the readable Jarvis format and loaded when Jarvis starts again.
 
-**Command:** `java -cp out/production/ip Jarvis`
+**Command:** `java -cp out/production/ip jarvis.Jarvis`
 
 **Inputs:** `todo remember this`, `bye`; run the command again with `list`, `bye`.
 
@@ -18,7 +18,7 @@ Add one `##` section per console UI test. Tests run in document order and stop a
 
 **Command:**
 ```sh
-java -cp out/production/ip Jarvis
+java -cp out/production/ip jarvis.Jarvis
 ```
 
 **Inputs:**
@@ -69,7 +69,7 @@ ____________________________________________________________
 
 **Command:**
 ```sh
-java -cp out/production/ip Jarvis
+java -cp out/production/ip jarvis.Jarvis
 ```
 
 **Inputs:**
@@ -132,7 +132,7 @@ ____________________________________________________________
 
 **Command:**
 ```sh
-java -cp out/production/ip Jarvis
+java -cp out/production/ip jarvis.Jarvis
 ```
 
 **Inputs:**
@@ -199,7 +199,7 @@ ____________________________________________________________
 
 **Command:**
 ```sh
-java -cp out/production/ip Jarvis
+java -cp out/production/ip jarvis.Jarvis
 ```
 
 **Inputs:**
@@ -260,7 +260,7 @@ ____________________________________________________________
 
 **Command:**
 ```sh
-java -cp out/production/ip Jarvis
+java -cp out/production/ip jarvis.Jarvis
 ```
 
 **Inputs:**
