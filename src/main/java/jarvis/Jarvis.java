@@ -141,7 +141,8 @@ public class Jarvis {
                 String to = requirePart(remainder.substring(toIndex + " /to ".length()), "event end time");
                 return new Event(description, from, to);
             }
-            throw new JarvisException("An event needs a description, start time, and end time, for example: event meeting /from 2pm /to 3pm");
+            throw new JarvisException("An event needs a description, start time, and end time, "
+                    + "for example: event meeting /from 2pm /to 3pm");
         }
 
         throw new JarvisException("I don't recognize that command. Try todo, deadline, event, list, find, mark, "
