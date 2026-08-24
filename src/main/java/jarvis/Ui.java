@@ -1,7 +1,7 @@
 package jarvis;
 
-import java.util.Scanner;
 import java.util.List;
+import java.util.Scanner;
 
 /** Handles all console input and output for Jarvis. */
 public class Ui {
