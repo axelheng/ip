@@ -2,7 +2,9 @@ package jarvis;
 
 /** Represents a task with a stated start and end date or time. */
 public class Event extends Task {
+    /** Start date or time of the event. */
     private final String from;
+    /** End date or time of the event. */
     private final String to;
 
     /** Creates an incomplete event task. */
@@ -22,11 +24,13 @@ public class Event extends Task {
         return to;
     }
 
+    /** Returns the type marker used when displaying an event. */
     @Override
     protected String getTypeIcon() {
         return "E";
     }
 
+    /** Returns the task followed by its start and end times. */
     @Override
     public String toString() {
         return super.toString() + " (from: " + from + " to: " + to + ")";

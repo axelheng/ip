@@ -5,7 +5,9 @@ import java.time.format.DateTimeFormatter;
 
 /** Represents a task that must be completed by a stated date or time. */
 public class Deadline extends Task {
+    /** Format used for presenting deadline dates in the user interface. */
     private static final DateTimeFormatter DISPLAY_FORMAT = DateTimeFormatter.ofPattern("MMM dd yyyy");
+    /** Date by which this task should be completed. */
     private final LocalDate by;
 
     /** Creates an incomplete deadline task. */
@@ -24,11 +26,13 @@ public class Deadline extends Task {
         return by.format(DISPLAY_FORMAT);
     }
 
+    /** Returns the type marker used when displaying a deadline. */
     @Override
     protected String getTypeIcon() {
         return "D";
     }
 
+    /** Returns the task followed by its formatted deadline date. */
     @Override
     public String toString() {
         return super.toString() + " (by: " + getFormattedBy() + ")";
