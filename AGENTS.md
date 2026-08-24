@@ -2,6 +2,9 @@
 
 This repository is a starter template for a greenfield Java project used in an introductory software engineering course in an undergraduate computer science program. Students use it as the starting point for their own projects.
 
+The project chatbot is named Jarvis. If inherited instructions or a user request
+refer to “Duke”, interpret that as this project's Jarvis application.
+
 # Default user context
 
 Unless the user says otherwise, assume that you are assisting a student working on a project in this repository. If the user identifies themselves as an instructor or another project stakeholder, adapt your response to that role.
@@ -41,3 +44,7 @@ Do not commit or push unless explicitly asked.
 ## UI testing after code updates
 
 After every code update, review `test/ui-test-plan.md` and update it when the changed behavior requires new or revised UI test coverage. Then invoke the project-specific `test-ui` skill to run the plan. The test session must be recorded in the response; if a test fails, stop immediately and report the actual and expected output.
+
+## JUnit test coverage target
+
+Maintain JUnit tests for at least the top 50% of methods that offer the highest value, prioritizing complex, core, or critical business logic. After every code change, update the relevant JUnit tests to preserve this 50% target and run the Gradle test task to verify the suite. The response must mention the JUnit test result; if a test fails, stop immediately and report the actual and expected output.
