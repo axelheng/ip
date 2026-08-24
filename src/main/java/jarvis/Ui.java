@@ -55,9 +55,11 @@ public class Ui {
     public void showMatchingTasks(List<Task> tasks, String keyword) {
         System.out.println("     Here are the matching tasks in your list:");
         String lowerCaseKeyword = keyword.toLowerCase();
+        int matchingTaskNumber = 1;
         for (int i = 0; i < tasks.size(); i++) {
             if (tasks.get(i).getDescription().toLowerCase().contains(lowerCaseKeyword)) {
-                System.out.println("     " + (i + 1) + "." + tasks.get(i));
+                System.out.println("     " + matchingTaskNumber + "." + tasks.get(i));
+                matchingTaskNumber++;
             }
         }
     }
