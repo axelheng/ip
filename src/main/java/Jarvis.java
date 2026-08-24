@@ -26,8 +26,15 @@ public class Jarvis {
             ui.showSeparator();
 
             if (command.equals("bye")) {
-                ui.showGoodbye();
-                break;
+                Command exitCommand = new ExitCommand();
+                try {
+                    exitCommand.execute(tasks, ui, storage);
+                } catch (JarvisException exception) {
+                    ui.showError(exception);
+                }
+                if (exitCommand.isExit()) {
+                    break;
+                }
             }
 
             if (command.equals("list")) {
