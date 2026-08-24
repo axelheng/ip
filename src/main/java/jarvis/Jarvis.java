@@ -140,6 +140,7 @@ public class Jarvis {
         throw new JarvisException("I don't recognize that command. Try todo, deadline, event, list, mark, unmark, delete, or bye.");
     }
 
+    /** Parses the numeric argument of a task-list action. */
     private static int parseTaskNumber(String command, String action) throws JarvisException {
         String taskNumberText = command.substring(action.length()).trim();
         if (taskNumberText.isEmpty()) {
@@ -152,10 +153,12 @@ public class Jarvis {
         }
     }
 
+    /** Validates the description portion of a task-creation command. */
     private static String requireDescription(String description, String command) throws JarvisException {
         return requirePart(description, command + " description");
     }
 
+    /** Validates and trims a required command component. */
     private static String requirePart(String value, String partName) throws JarvisException {
         String trimmedValue = value.trim();
         if (trimmedValue.isEmpty()) {

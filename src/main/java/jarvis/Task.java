@@ -2,7 +2,9 @@ package jarvis;
 
 /** Represents a task and whether it has been completed. */
 public class Task {
+    /** Text shown to the user for this task. */
     private final String description;
+    /** Completion state used when displaying and saving this task. */
     private TaskStatus status;
 
     /**

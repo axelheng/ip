@@ -5,7 +5,9 @@ import java.util.List;
 
 /** Handles all console input and output for Jarvis. */
 public class Ui {
+    /** Text printed between user interactions. */
     private static final String SEPARATOR = "____________________________________________________________";
+    /** Reads commands from standard input. */
     private final Scanner scanner;
 
     /** Creates a UI that reads commands from standard input. */
