@@ -128,7 +128,8 @@ public class Jarvis {
                     throw new JarvisException("A deadline date must use yyyy-mm-dd, for example: 2019-10-15");
                 }
             }
-            throw new JarvisException("A deadline needs a description and a date, for example: deadline report /by Friday");
+            throw new JarvisException("A deadline needs a description and a date, "
+                    + "for example: deadline report /by Friday");
         }
 
         if (command.startsWith("event ")) {
@@ -137,7 +138,8 @@ public class Jarvis {
             int toIndex = remainder.indexOf(" /to ", fromIndex + 1);
             if (fromIndex >= 0 && toIndex >= 0) {
                 String description = requireDescription(remainder.substring(0, fromIndex), "event");
-                String from = requirePart(remainder.substring(fromIndex + " /from ".length(), toIndex), "event start time");
+                String from = requirePart(remainder.substring(fromIndex + " /from ".length(), toIndex),
+                        "event start time");
                 String to = requirePart(remainder.substring(toIndex + " /to ".length()), "event end time");
                 return new Event(description, from, to);
             }

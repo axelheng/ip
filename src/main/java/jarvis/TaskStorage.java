@@ -80,7 +80,9 @@ public class TaskStorage {
                 if (separator <= 0 || separator == eventDetails.length() - 1) {
                     return null;
                 }
-                task = new Event(description, eventDetails.substring(0, separator), eventDetails.substring(separator + 1));
+                String from = eventDetails.substring(0, separator);
+                String to = eventDetails.substring(separator + 1);
+                task = new Event(description, from, to);
             } else if (parts[0].equals("T") && parts.length == 3) {
                 task = new Todo(description);
             } else {
