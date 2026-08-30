@@ -23,3 +23,15 @@ Prerequisites: JDK 25, update Intellij to the most recent version.
 ## Project conventions
 
 See [Java coding standards](docs/coding-standards.md) and [Git conventions](docs/git-conventions.md) before contributing.
+
+## Running the graphical interface
+
+The JavaFX interface can be started with JDK 25 using:
+
+```sh
+./gradlew runGui
+```
+
+Enter commands such as `todo read a book`, `list`, `mark 1`, or `delete 1` in
+the input box. Tasks are saved in the same `data/jarvis.txt` file used by the
+console interface.

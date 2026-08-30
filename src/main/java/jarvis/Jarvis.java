@@ -110,7 +110,7 @@ public class Jarvis {
     }
 
     /** Converts a task-creation command into its corresponding task subtype. */
-    private static Task parseTask(String command) throws JarvisException {
+    static Task parseTask(String command) throws JarvisException {
         if (command.equals("todo") || command.startsWith("todo ")) {
             String description = command.equals("todo") ? "" : command.substring("todo ".length());
             return new Todo(requireDescription(description, "todo"));
@@ -152,7 +152,7 @@ public class Jarvis {
     }
 
     /** Parses the numeric argument of a task-list action. */
-    private static int parseTaskNumber(String command, String action) throws JarvisException {
+    static int parseTaskNumber(String command, String action) throws JarvisException {
         String taskNumberText = command.substring(action.length()).trim();
         if (taskNumberText.isEmpty()) {
             throw new JarvisException("Please provide a task number after " + action + ".");
