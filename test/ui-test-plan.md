@@ -12,6 +12,23 @@
 
 Add one `##` section per console UI test. Tests run in document order and stop at the first failure.
 
+## JavaFX graphical interface smoke test
+
+**Aim:** Verify that the JavaFX interface starts, displays saved tasks, accepts a command, and refreshes the task list.
+
+**Command:**
+```sh
+./gradlew runGui
+```
+
+**Inputs:** In the graphical window, enter `todo graphical task`, press Enter, then enter `mark 1`.
+
+**Expected output:** The conversation shows the added task and the marked task, and the `Your tasks` panel displays
+`1. [T][X] graphical task`. Close the window after the smoke test.
+
+This test requires a desktop environment and is run manually because the automated console test runner cannot interact
+with JavaFX windows.
+
 ## Create and list typed tasks
 
 **Aim:** Verify that Jarvis creates ToDos, Deadlines, and Events, displays their type and date/time strings, lists them polymorphically, and exits correctly.
