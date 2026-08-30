@@ -40,7 +40,7 @@ public class Jarvis {
             }
 
             if (command.equals("list")) {
-                ui.showTasks(tasks);
+                ui.showTasks(tasks.toArray(Task[]::new));
             } else if (command.equals("find") || command.startsWith("find ")) {
                 String keyword = command.substring("find".length()).trim();
                 if (keyword.isEmpty()) {

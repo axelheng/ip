@@ -45,11 +45,11 @@ public class Ui {
         showSeparator();
     }
 
-    /** Displays the tasks currently in the list. */
-    public void showTasks(List<Task> tasks) {
+    /** Displays the supplied tasks in their given order. */
+    public void showTasks(Task... tasks) {
         System.out.println("     Here are the tasks in your list:");
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println("     " + (i + 1) + "." + tasks.get(i));
+        for (int i = 0; i < tasks.length; i++) {
+            System.out.println("     " + (i + 1) + "." + tasks[i]);
         }
     }
 
