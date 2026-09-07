@@ -10,6 +10,8 @@ public class Event extends Task {
     /** Creates an incomplete event task. */
     public Event(String description, String from, String to) {
         super(description);
+        assert from != null : "Event start time must not be null";
+        assert to != null : "Event end time must not be null";
         this.from = from;
         this.to = to;
     }
