@@ -2,6 +2,7 @@ package jarvis;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.IntStream;
 
 /** Handles all console input and output for Jarvis. */
 public class Ui {
@@ -57,13 +58,11 @@ public class Ui {
     public void showMatchingTasks(List<Task> tasks, String keyword) {
         System.out.println("     Here are the matching tasks in your list:");
         String lowerCaseKeyword = keyword.toLowerCase();
-        int matchingTaskNumber = 1;
-        for (int i = 0; i < tasks.size(); i++) {
-            if (tasks.get(i).getDescription().toLowerCase().contains(lowerCaseKeyword)) {
-                System.out.println("     " + matchingTaskNumber + "." + tasks.get(i));
-                matchingTaskNumber++;
-            }
-        }
+        List<Task> matchingTasks = tasks.stream()
+                .filter(task -> task.getDescription().toLowerCase().contains(lowerCaseKeyword))
+                .toList();
+        IntStream.range(0, matchingTasks.size())
+                .forEach(index -> System.out.println("     " + (index + 1) + "." + matchingTasks.get(index)));
     }
 
     /** Displays an error message caused by invalid user input. */
