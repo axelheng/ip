@@ -13,6 +13,7 @@ public class Task {
      * @param description the task description
      */
     public Task(String description) {
+        assert description != null : "Task description must not be null";
         this.description = description;
         this.status = TaskStatus.NOT_DONE;
     }
@@ -29,6 +30,7 @@ public class Task {
 
     /** Restores the completion status of a task loaded from storage. */
     void restoreStatus(boolean isDone) {
+        assert status != null : "Task status must be initialized before restoring it";
         status = isDone ? TaskStatus.DONE : TaskStatus.NOT_DONE;
     }
 
