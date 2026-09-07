@@ -1,18 +1,45 @@
 # UI Test Plan
 
-## Save and load tasks
+## Save and list tasks
 
-**Aim:** Verify that tasks are saved in the readable Jarvis format and loaded when Jarvis starts again.
+**Aim:** Verify that a task is saved in the readable Jarvis format and appears when the task list is displayed.
 
-**Command:** `java -cp out/production/ip jarvis.Jarvis`
+**Command:**
+```sh
+test -d build/classes/java/main && test -d build/resources/main && cd "$(mktemp -d)" && java -cp /Users/axelheng/ip/build/classes/java/main:/Users/axelheng/ip/build/resources/main jarvis.Jarvis
+```
 
-**Inputs:** `todo remember this`, `bye`; run the command again with `list`, `bye`.
+**Inputs:**
+```text
+todo remember this
+list
+bye
+```
 
-**Expected output:** The second run lists `1.[T][ ] remember this` before exiting, and `data/jarvis.txt` contains `T | 0 | remember this`.
+**Expected output:**
+```text
+____________________________________________________________
+Jarvis
+Hello! I'm Jarvis.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+     Got it. I've added this task:
+       [T][ ] remember this
+     Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+     Here are the tasks in your list:
+     1.[T][ ] remember this
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
 
 Add one `##` section per console UI test. Tests run in document order and stop at the first failure.
 
-## JavaFX graphical interface smoke test
+### JavaFX graphical interface smoke test
 
 **Aim:** Verify that the JavaFX interface starts, displays saved tasks, accepts a command, and refreshes the task list.
 
@@ -35,7 +62,7 @@ with JavaFX windows.
 
 **Command:**
 ```sh
-java -cp out/production/ip jarvis.Jarvis
+test -d build/classes/java/main && test -d build/resources/main && cd "$(mktemp -d)" && java -cp /Users/axelheng/ip/build/classes/java/main:/Users/axelheng/ip/build/resources/main jarvis.Jarvis
 ```
 
 **Inputs:**
@@ -86,7 +113,7 @@ ____________________________________________________________
 
 **Command:**
 ```sh
-java -cp out/production/ip jarvis.Jarvis
+test -d build/classes/java/main && test -d build/resources/main && cd "$(mktemp -d)" && java -cp /Users/axelheng/ip/build/classes/java/main:/Users/axelheng/ip/build/resources/main jarvis.Jarvis
 ```
 
 **Inputs:**
@@ -149,7 +176,7 @@ ____________________________________________________________
 
 **Command:**
 ```sh
-java -cp out/production/ip jarvis.Jarvis
+test -d build/classes/java/main && test -d build/resources/main && cd "$(mktemp -d)" && java -cp /Users/axelheng/ip/build/classes/java/main:/Users/axelheng/ip/build/resources/main jarvis.Jarvis
 ```
 
 **Inputs:**
@@ -216,7 +243,7 @@ ____________________________________________________________
 
 **Command:**
 ```sh
-java -cp out/production/ip jarvis.Jarvis
+test -d build/classes/java/main && test -d build/resources/main && cd "$(mktemp -d)" && java -cp /Users/axelheng/ip/build/classes/java/main:/Users/axelheng/ip/build/resources/main jarvis.Jarvis
 ```
 
 **Inputs:**
@@ -243,7 +270,7 @@ ____________________________________________________________
      Oops: A todo description cannot be empty.
 ____________________________________________________________
 ____________________________________________________________
-     Oops: I don't recognize that command. Try todo, deadline, event, list, mark, unmark, delete, or bye.
+     Oops: I don't recognize that command. Try todo, deadline, event, list, find, mark, unmark, delete, or bye.
 ____________________________________________________________
 ____________________________________________________________
      Oops: A deadline needs a description and a date, for example: deadline report /by Friday
@@ -277,7 +304,7 @@ ____________________________________________________________
 
 **Command:**
 ```sh
-java -cp out/production/ip jarvis.Jarvis
+test -d build/classes/java/main && test -d build/resources/main && cd "$(mktemp -d)" && java -cp /Users/axelheng/ip/build/classes/java/main:/Users/axelheng/ip/build/resources/main jarvis.Jarvis
 ```
 
 **Inputs:**
@@ -338,7 +365,7 @@ ____________________________________________________________
 ____________________________________________________________
      Here are the tasks in your list:
      1.[T][X] read book
-     2.[D][X] return book (by: June 6th)
+     2.[D][X] return book (by: Jun 06 2019)
      3.[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
      4.[T][ ] join sports club
      5.[T][ ] borrow book
@@ -351,7 +378,7 @@ ____________________________________________________________
 ____________________________________________________________
      Here are the tasks in your list:
      1.[T][X] read book
-     2.[D][X] return book (by: June 6th)
+     2.[D][X] return book (by: Jun 06 2019)
      3.[T][ ] join sports club
      4.[T][ ] borrow book
 ____________________________________________________________
