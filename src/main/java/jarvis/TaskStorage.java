@@ -52,10 +52,9 @@ public class TaskStorage {
     private String formatTask(Task task) {
         String type = task instanceof Deadline ? "D" : task instanceof Event ? "E" : "T";
         String details = "";
-        if (task instanceof Deadline) {
-            details = ((Deadline) task).getBy().toString();
-        } else if (task instanceof Event) {
-            Event event = (Event) task;
+        if (task instanceof Deadline deadline) {
+            details = deadline.getBy().toString();
+        } else if (task instanceof Event event) {
             details = event.getFrom() + " " + event.getTo();
         }
         return type + " | " + (task.getStatusIcon().equals("X") ? "1" : "0") + " | "
