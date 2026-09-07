@@ -38,7 +38,20 @@ Ensure that Java 25 is used when running the application or build tasks. On macO
 ## Git
 
 Use lightweight tags unless the user requests an annotated tag.
-When proposing or creating a commit message, include enough detail to explain the rationale for the change.
+When proposing or creating a commit message, follow the SE Education Git conventions:
+
+* Keep the subject in imperative mood, capitalize its first letter, avoid a
+  trailing period, and aim for 50 characters or fewer (hard limit: 72).
+* For non-trivial commits, separate the subject and body with a blank line.
+* Wrap body lines at 72 characters and use blank lines between paragraphs.
+* Use the body to explain WHAT changed and WHY it changed, not HOW the code
+  was implemented.
+* Structure the body with the current situation, why it needs to change, what
+  is being done, why that approach was chosen, and any other relevant context.
+* Use bullet points when they make multiple changes easier to understand.
+
+When suggesting a commit, include enough detail to explain the rationale for
+the change and follow these formatting rules.
 Do not commit or push unless explicitly asked.
 
 ## UI testing after code updates

@@ -30,4 +30,22 @@ class DeadlineTest {
 
         assertEquals("[D][X] submit report (by: Aug 24 2026)", deadline.toString());
     }
+
+    @Test
+    void snoozeUntil_deadline_changesDueDate() {
+        Deadline deadline = new Deadline("submit report", LocalDate.of(2026, 8, 24));
+        deadline.snoozeUntil(LocalDate.of(2026, 8, 31));
+        assertEquals(LocalDate.of(2026, 8, 31), deadline.getBy());
+    }
+
+    @Test
+    void snoozeUntil_completedDeadline_preservesCompletedStatus() {
+        Deadline deadline = new Deadline("submit report", LocalDate.of(2026, 8, 24));
+        deadline.markAsDone();
+
+        deadline.snoozeUntil(LocalDate.of(2026, 8, 31));
+
+        assertEquals("X", deadline.getStatusIcon());
+        assertEquals("[D][X] submit report (by: Aug 31 2026)", deadline.toString());
+    }
 }

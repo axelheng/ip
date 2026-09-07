@@ -39,6 +39,48 @@ ____________________________________________________________
 
 Add one `##` section per console UI test. Tests run in document order and stop at the first failure.
 
+## Snooze a deadline
+
+**Aim:** Verify that a deadline can be postponed and displayed with its new date.
+
+**Command:**
+```sh
+test -d build/classes/java/main && test -d build/resources/main && cd "$(mktemp -d)" && java -cp /Users/axelheng/ip/build/classes/java/main:/Users/axelheng/ip/build/resources/main jarvis.Jarvis
+```
+
+**Inputs:**
+```text
+deadline submit report /by 2026-09-10
+snooze 1 /by 2026-09-20
+list
+bye
+```
+
+**Expected output:**
+```text
+____________________________________________________________
+Jarvis
+Hello! I'm Jarvis.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+     Got it. I've added this task:
+       [D][ ] submit report (by: Sep 10 2026)
+     Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+     Snoozed task 1 until Sep 20 2026:
+       [D][ ] submit report (by: Sep 20 2026)
+____________________________________________________________
+____________________________________________________________
+     Here are the tasks in your list:
+     1.[D][ ] submit report (by: Sep 20 2026)
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
 ### JavaFX graphical interface smoke test
 
 **Aim:** Verify that the JavaFX interface starts, displays saved tasks, accepts a command, and refreshes the task list.
@@ -55,6 +97,70 @@ Add one `##` section per console UI test. Tests run in document order and stop a
 
 This test requires a desktop environment and is run manually because the automated console test runner cannot interact
 with JavaFX windows.
+
+## Reject invalid snooze requests
+
+**Aim:** Verify that snooze rejects missing, invalid, out-of-range, and non-deadline task selections.
+
+**Command:**
+```sh
+test -d build/classes/java/main && test -d build/resources/main && cd "$(mktemp -d)" && java -cp /Users/axelheng/ip/build/classes/java/main:/Users/axelheng/ip/build/resources/main jarvis.Jarvis
+```
+
+**Inputs:**
+```text
+snooze
+snooze nope /by 2026-09-20
+snooze 1 /by 2026-09-20
+todo read book
+snooze 1 /by 2026-09-20
+deadline submit report /by 2026-09-10
+snooze 2 /by invalid
+list
+bye
+```
+
+**Expected output:**
+```text
+____________________________________________________________
+Jarvis
+Hello! I'm Jarvis.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+     Oops: Use snooze <task number> /by <yyyy-mm-dd>.
+____________________________________________________________
+____________________________________________________________
+     Oops: Please provide a valid task number after snooze.
+____________________________________________________________
+____________________________________________________________
+     Oops: There is no task with that number.
+____________________________________________________________
+____________________________________________________________
+     Got it. I've added this task:
+       [T][ ] read book
+     Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+     Oops: Only deadline tasks can be snoozed.
+____________________________________________________________
+____________________________________________________________
+     Got it. I've added this task:
+       [D][ ] submit report (by: Sep 10 2026)
+     Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+     Oops: A snooze date must use yyyy-mm-dd, for example: 2019-10-15
+____________________________________________________________
+____________________________________________________________
+     Here are the tasks in your list:
+     1.[T][ ] read book
+     2.[D][ ] submit report (by: Sep 10 2026)
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
 
 ## Create and list typed tasks
 
@@ -270,7 +376,7 @@ ____________________________________________________________
      Oops: A todo description cannot be empty.
 ____________________________________________________________
 ____________________________________________________________
-     Oops: I don't recognize that command. Try todo, deadline, event, list, find, mark, unmark, delete, or bye.
+     Oops: I don't recognize that command. Try todo, deadline, event, list, find, mark, unmark, delete, snooze, or bye.
 ____________________________________________________________
 ____________________________________________________________
      Oops: A deadline needs a description and a date, for example: deadline report /by Friday

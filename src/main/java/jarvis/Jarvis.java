@@ -92,6 +92,35 @@ public class Jarvis {
                 } catch (JarvisException exception) {
                     ui.showError(exception);
                 }
+            } else if (command.equals("snooze") || command.startsWith("snooze ")) {
+                try {
+                    String remainder = command.substring("snooze".length()).trim();
+                    int byIndex = remainder.indexOf(" /by ");
+                    if (byIndex < 0) {
+                        throw new JarvisException("Use snooze <task number> /by <yyyy-mm-dd>.");
+                    }
+                    int taskNumber = parseTaskNumber("snooze " + remainder.substring(0, byIndex), "snooze");
+                    if (taskNumber < 1 || taskNumber > tasks.size()) {
+                        throw new JarvisException("There is no task with that number.");
+                    }
+                    String dateText = requirePart(remainder.substring(byIndex + 5), "snooze date");
+                    LocalDate newDate;
+                    try {
+                        newDate = LocalDate.parse(dateText);
+                    } catch (DateTimeParseException exception) {
+                        throw new JarvisException("A snooze date must use yyyy-mm-dd, for example: 2019-10-15");
+                    }
+                    Task task = tasks.get(taskNumber - 1);
+                    if (!(task instanceof Deadline deadline)) {
+                        throw new JarvisException("Only deadline tasks can be snoozed.");
+                    }
+                    deadline.snoozeUntil(newDate);
+                    storage.save(tasks);
+                    System.out.println("     Snoozed task " + taskNumber + " until " + deadline.getFormattedBy() + ":");
+                    System.out.println("       " + deadline);
+                } catch (JarvisException exception) {
+                    ui.showError(exception);
+                }
             } else {
                 try {
                     Task task = parseTask(command);
@@ -148,7 +177,7 @@ public class Jarvis {
         }
 
         throw new JarvisException("I don't recognize that command. Try todo, deadline, event, list, find, mark, "
-                + "unmark, delete, or bye.");
+                + "unmark, delete, snooze, or bye.");
     }
 
     /** Parses the numeric argument of a task-list action. */
