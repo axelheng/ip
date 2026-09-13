@@ -1,6 +1,5 @@
 package jarvis;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javafx.application.Application;
@@ -24,6 +23,13 @@ import javafx.stage.Stage;
 
 /** Provides a JavaFX graphical interface for the Jarvis chatbot. */
 public class JarvisGui extends Application {
+    private static final int COMMAND_BAR_SPACING = 10;
+    private static final int HEADER_SPACING = 2;
+    private static final int PANE_SPACING = 10;
+    private static final int PADDING = 24;
+    private static final int WINDOW_WIDTH = 920;
+    private static final int WINDOW_HEIGHT = 600;
+
     /** Stores tasks between GUI interactions. */
     private final TaskStorage storage = new TaskStorage();
     /** The current tasks shown in the task list. */
@@ -40,16 +46,32 @@ public class JarvisGui extends Application {
     public void start(Stage stage) {
         tasks.addAll(storage.load());
 
-        Label title = new Label("Jarvis");
-        title.getStyleClass().add("title");
-        Label subtitle = new Label("Your personal task assistant");
-        subtitle.getStyleClass().add("subtitle");
+        configureConversation();
+        configureTaskList();
+        HBox commandBar = createCommandBar();
+        VBox leftPane = createLeftPane(commandBar);
+        VBox rightPane = createRightPane();
 
+        BorderPane root = new BorderPane();
+        root.setLeft(leftPane);
+        root.setCenter(rightPane);
+        Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+        scene.getStylesheets().add(getClass().getResource("/jarvis.css").toExternalForm());
+        stage.setScene(scene);
+        stage.setTitle("Jarvis");
+        stage.show();
+    }
+
+    /** Configures the conversation area used to display messages. */
+    private void configureConversation() {
         conversation.setEditable(false);
         conversation.setWrapText(true);
         conversation.getStyleClass().add("conversation");
         conversation.appendText("Hello! I'm Jarvis.\nWhat can I do for you?\n\n");
+    }
 
+    /** Configures how tasks are rendered in the task list. */
+    private void configureTaskList() {
         taskList.setPlaceholder(new Label("No tasks yet"));
         taskList.setCellFactory(view -> new ListCell<>() {
             @Override
@@ -58,7 +80,10 @@ public class JarvisGui extends Application {
                 setText(empty || task == null ? null : getItemText(getIndex(), task));
             }
         });
+    }
 
+    /** Creates the input bar used to submit commands. */
+    private HBox createCommandBar() {
         commandInput.setPromptText("Try: todo read a book, list, or bye");
         commandInput.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
@@ -69,30 +94,33 @@ public class JarvisGui extends Application {
         sendButton.setDefaultButton(true);
         sendButton.setOnAction(event -> submitCommand());
 
-        HBox commandBar = new HBox(10, commandInput, sendButton);
+        HBox commandBar = new HBox(COMMAND_BAR_SPACING, commandInput, sendButton);
         commandBar.setAlignment(Pos.CENTER);
         HBox.setHgrow(commandInput, Priority.ALWAYS);
+        return commandBar;
+    }
 
-        VBox header = new VBox(2, title, subtitle);
-        VBox leftPane = new VBox(10, header, conversation, commandBar);
-        leftPane.setPadding(new Insets(24));
+    /** Creates the left pane containing the conversation and command input. */
+    private VBox createLeftPane(HBox commandBar) {
+        Label title = new Label("Jarvis");
+        title.getStyleClass().add("title");
+        Label subtitle = new Label("Your personal task assistant");
+        subtitle.getStyleClass().add("subtitle");
+        VBox header = new VBox(HEADER_SPACING, title, subtitle);
+        VBox leftPane = new VBox(PANE_SPACING, header, conversation, commandBar);
+        leftPane.setPadding(new Insets(PADDING));
         VBox.setVgrow(conversation, Priority.ALWAYS);
+        return leftPane;
+    }
 
+    /** Creates the right pane containing the saved tasks. */
+    private VBox createRightPane() {
         Label tasksTitle = new Label("Your tasks");
         tasksTitle.getStyleClass().add("section-title");
-        VBox rightPane = new VBox(10, tasksTitle, taskList);
-        rightPane.setPadding(new Insets(24, 24, 24, 0));
+        VBox rightPane = new VBox(PANE_SPACING, tasksTitle, taskList);
+        rightPane.setPadding(new Insets(PADDING, PADDING, PADDING, 0));
         VBox.setVgrow(taskList, Priority.ALWAYS);
-
-        BorderPane root = new BorderPane();
-        root.setLeft(leftPane);
-        root.setCenter(rightPane);
-        BorderPane.setMargin(leftPane, new Insets(0, 0, 0, 0));
-        Scene scene = new Scene(root, 920, 600);
-        scene.getStylesheets().add(getClass().getResource("/jarvis.css").toExternalForm());
-        stage.setScene(scene);
-        stage.setTitle("Jarvis");
-        stage.show();
+        return rightPane;
     }
 
     /** Executes the command in the input field and refreshes the task list. */
@@ -114,59 +142,79 @@ public class JarvisGui extends Application {
 
     /** Processes one command and returns the messages that belong in the conversation. */
     private List<String> processCommand(String command) {
-        List<String> responses = new ArrayList<>();
         try {
             if (command.equals("bye")) {
-                responses.add("Bye. Hope to see you again soon!");
-                return responses;
+                return List.of("Bye. Hope to see you again soon!");
             }
             if (command.equals("list")) {
-                responses.add(tasks.isEmpty() ? "Your task list is empty." : "Here are the tasks in your list:");
-                return responses;
+                return processListCommand();
             }
             if (command.equals("find") || command.startsWith("find ")) {
-                String keyword = command.substring("find".length()).trim();
-                if (keyword.isEmpty()) {
-                    throw new JarvisException("Please provide a keyword after find.");
-                }
-                responses.add("Searching for: " + keyword);
-                return responses;
+                return processFindCommand(command);
             }
             if (command.startsWith("delete")) {
-                int taskNumber = Jarvis.parseTaskNumber(command, "delete");
-                if (taskNumber < 1 || taskNumber > tasks.size()) {
-                    throw new JarvisException("There is no task with that number.");
-                }
-                Task removedTask = tasks.remove(taskNumber - 1);
-                storage.save(tasks);
-                responses.add("Removed: " + removedTask);
-                return responses;
+                return processDeleteCommand(command);
             }
             if (command.startsWith("mark") || command.startsWith("unmark")) {
-                String action = command.startsWith("mark") ? "mark" : "unmark";
-                int taskNumber = Jarvis.parseTaskNumber(command, action);
-                if (taskNumber < 1 || taskNumber > tasks.size()) {
-                    throw new JarvisException("There is no task with that number.");
-                }
-                Task task = tasks.get(taskNumber - 1);
-                if (action.equals("mark")) {
-                    task.markAsDone();
-                } else {
-                    task.markAsNotDone();
-                }
-                storage.save(tasks);
-                responses.add("Updated: " + task);
-                return responses;
+                return processStatusCommand(command);
             }
-
-            Task task = Jarvis.parseTask(command);
-            tasks.add(task);
-            storage.save(tasks);
-            responses.add("Added: " + task);
+            return processCreateCommand(command);
         } catch (JarvisException exception) {
-            responses.add("Oops: " + exception.getMessage());
+            return List.of("Oops: " + exception.getMessage());
         }
-        return responses;
+    }
+
+    /** Returns the response for a list command. */
+    private List<String> processListCommand() {
+        if (tasks.isEmpty()) {
+            return List.of("Your task list is empty.");
+        }
+        return List.of("Here are the tasks in your list:");
+    }
+
+    /** Returns the response for a find command after validating its keyword. */
+    private List<String> processFindCommand(String command) throws JarvisException {
+        String keyword = command.substring("find".length()).trim();
+        if (keyword.isEmpty()) {
+            throw new JarvisException("Please provide a keyword after find.");
+        }
+        return List.of("Searching for: " + keyword);
+    }
+
+    /** Deletes the selected GUI task and returns the confirmation message. */
+    private List<String> processDeleteCommand(String command) throws JarvisException {
+        int taskNumber = Jarvis.parseTaskNumber(command, "delete");
+        if (taskNumber < 1 || taskNumber > tasks.size()) {
+            throw new JarvisException("There is no task with that number.");
+        }
+        Task removedTask = tasks.remove(taskNumber - 1);
+        storage.save(tasks);
+        return List.of("Removed: " + removedTask);
+    }
+
+    /** Updates a GUI task's completion status and returns the confirmation message. */
+    private List<String> processStatusCommand(String command) throws JarvisException {
+        String action = command.startsWith("mark") ? "mark" : "unmark";
+        int taskNumber = Jarvis.parseTaskNumber(command, action);
+        if (taskNumber < 1 || taskNumber > tasks.size()) {
+            throw new JarvisException("There is no task with that number.");
+        }
+        Task task = tasks.get(taskNumber - 1);
+        if (action.equals("mark")) {
+            task.markAsDone();
+        } else {
+            task.markAsNotDone();
+        }
+        storage.save(tasks);
+        return List.of("Updated: " + task);
+    }
+
+    /** Creates a GUI task and returns the confirmation message. */
+    private List<String> processCreateCommand(String command) throws JarvisException {
+        Task task = Jarvis.parseTask(command);
+        tasks.add(task);
+        storage.save(tasks);
+        return List.of("Added: " + task);
     }
 
     /** Returns the numbered text displayed for one task. */

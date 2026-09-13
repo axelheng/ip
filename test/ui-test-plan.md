@@ -1,12 +1,31 @@
 # UI Test Plan
 
+### Maintaining this plan
+
+Add or revise an automated `##` test whenever a console command, validation
+rule, persistence behavior visible through the console, or expected output
+changes. Each automated test must include an **Aim**, **Command**, **Inputs**,
+and **Expected output** section. Tests run in document order and stop at the
+first failure.
+
+Keep expected output exact, including spacing and blank lines. Run the plan
+from the project root with:
+
+```sh
+python3 .codex/skills/test-ui/scripts/run_ui_tests.py test/ui-test-plan.md
+```
+
+Console tests use a temporary working directory so they do not modify the
+repository's real task data. Update the JavaFX smoke test manually when the
+graphical interface changes.
+
 ## Save and list tasks
 
 **Aim:** Verify that a task is saved in the readable Jarvis format and appears when the task list is displayed.
 
 **Command:**
 ```sh
-test -d build/classes/java/main && test -d build/resources/main && cd "$(mktemp -d)" && java -cp /Users/axelheng/ip/build/classes/java/main:/Users/axelheng/ip/build/resources/main jarvis.Jarvis
+repo_root="$(pwd)" && test -d "$repo_root/build/classes/java/main" && test -d "$repo_root/build/resources/main" && cd "$(mktemp -d)" && java -cp "$repo_root/build/classes/java/main:$repo_root/build/resources/main" jarvis.Jarvis
 ```
 
 **Inputs:**
@@ -45,7 +64,7 @@ Add one `##` section per console UI test. Tests run in document order and stop a
 
 **Command:**
 ```sh
-test -d build/classes/java/main && test -d build/resources/main && cd "$(mktemp -d)" && java -cp /Users/axelheng/ip/build/classes/java/main:/Users/axelheng/ip/build/resources/main jarvis.Jarvis
+repo_root="$(pwd)" && test -d "$repo_root/build/classes/java/main" && test -d "$repo_root/build/resources/main" && cd "$(mktemp -d)" && java -cp "$repo_root/build/classes/java/main:$repo_root/build/resources/main" jarvis.Jarvis
 ```
 
 **Inputs:**
@@ -104,7 +123,7 @@ with JavaFX windows.
 
 **Command:**
 ```sh
-test -d build/classes/java/main && test -d build/resources/main && cd "$(mktemp -d)" && java -cp /Users/axelheng/ip/build/classes/java/main:/Users/axelheng/ip/build/resources/main jarvis.Jarvis
+repo_root="$(pwd)" && test -d "$repo_root/build/classes/java/main" && test -d "$repo_root/build/resources/main" && cd "$(mktemp -d)" && java -cp "$repo_root/build/classes/java/main:$repo_root/build/resources/main" jarvis.Jarvis
 ```
 
 **Inputs:**
@@ -168,7 +187,7 @@ ____________________________________________________________
 
 **Command:**
 ```sh
-test -d build/classes/java/main && test -d build/resources/main && cd "$(mktemp -d)" && java -cp /Users/axelheng/ip/build/classes/java/main:/Users/axelheng/ip/build/resources/main jarvis.Jarvis
+repo_root="$(pwd)" && test -d "$repo_root/build/classes/java/main" && test -d "$repo_root/build/resources/main" && cd "$(mktemp -d)" && java -cp "$repo_root/build/classes/java/main:$repo_root/build/resources/main" jarvis.Jarvis
 ```
 
 **Inputs:**
@@ -219,7 +238,7 @@ ____________________________________________________________
 
 **Command:**
 ```sh
-test -d build/classes/java/main && test -d build/resources/main && cd "$(mktemp -d)" && java -cp /Users/axelheng/ip/build/classes/java/main:/Users/axelheng/ip/build/resources/main jarvis.Jarvis
+repo_root="$(pwd)" && test -d "$repo_root/build/classes/java/main" && test -d "$repo_root/build/resources/main" && cd "$(mktemp -d)" && java -cp "$repo_root/build/classes/java/main:$repo_root/build/resources/main" jarvis.Jarvis
 ```
 
 **Inputs:**
@@ -282,7 +301,7 @@ ____________________________________________________________
 
 **Command:**
 ```sh
-test -d build/classes/java/main && test -d build/resources/main && cd "$(mktemp -d)" && java -cp /Users/axelheng/ip/build/classes/java/main:/Users/axelheng/ip/build/resources/main jarvis.Jarvis
+repo_root="$(pwd)" && test -d "$repo_root/build/classes/java/main" && test -d "$repo_root/build/resources/main" && cd "$(mktemp -d)" && java -cp "$repo_root/build/classes/java/main:$repo_root/build/resources/main" jarvis.Jarvis
 ```
 
 **Inputs:**
@@ -349,7 +368,7 @@ ____________________________________________________________
 
 **Command:**
 ```sh
-test -d build/classes/java/main && test -d build/resources/main && cd "$(mktemp -d)" && java -cp /Users/axelheng/ip/build/classes/java/main:/Users/axelheng/ip/build/resources/main jarvis.Jarvis
+repo_root="$(pwd)" && test -d "$repo_root/build/classes/java/main" && test -d "$repo_root/build/resources/main" && cd "$(mktemp -d)" && java -cp "$repo_root/build/classes/java/main:$repo_root/build/resources/main" jarvis.Jarvis
 ```
 
 **Inputs:**
@@ -410,7 +429,7 @@ ____________________________________________________________
 
 **Command:**
 ```sh
-test -d build/classes/java/main && test -d build/resources/main && cd "$(mktemp -d)" && java -cp /Users/axelheng/ip/build/classes/java/main:/Users/axelheng/ip/build/resources/main jarvis.Jarvis
+repo_root="$(pwd)" && test -d "$repo_root/build/classes/java/main" && test -d "$repo_root/build/resources/main" && cd "$(mktemp -d)" && java -cp "$repo_root/build/classes/java/main:$repo_root/build/resources/main" jarvis.Jarvis
 ```
 
 **Inputs:**

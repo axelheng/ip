@@ -10,7 +10,7 @@ public class Task {
     /**
      * Creates a new incomplete task.
      *
-     * @param description the task description
+     * @param description the task description.
      */
     public Task(String description) {
         assert description != null : "Task description must not be null";
@@ -37,7 +37,7 @@ public class Task {
     /**
      * Returns the status icon used when displaying this task.
      *
-     * @return {@code X} for a done task, otherwise a blank space
+     * @return {@code X} for a done task, otherwise a blank space.
      */
     public String getStatusIcon() {
         return status == TaskStatus.DONE ? "X" : " ";
@@ -46,7 +46,7 @@ public class Task {
     /**
      * Returns the task description.
      *
-     * @return the task description
+     * @return the task description.
      */
     public String getDescription() {
         return description;
@@ -55,7 +55,7 @@ public class Task {
     /**
      * Returns the one-letter marker used for this task type.
      *
-     * @return {@code T} for a basic task
+     * @return {@code T} for a basic task.
      */
     protected String getTypeIcon() {
         return "T";
@@ -64,7 +64,7 @@ public class Task {
     /**
      * Returns the task in the format used by the command-line interface.
      *
-     * @return the type marker, completion marker, and description
+     * @return the type marker, completion marker, and description.
      */
     @Override
     public String toString() {

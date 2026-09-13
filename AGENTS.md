@@ -61,3 +61,14 @@ After every code update, review `test/ui-test-plan.md` and update it when the ch
 ## JUnit test coverage target
 
 Maintain JUnit tests for at least the top 50% of methods that offer the highest value, prioritizing complex, core, or critical business logic. After every code change, update the relevant JUnit tests to preserve this 50% target and run the Gradle test task to verify the suite. The response must mention the JUnit test result; if a test fails, stop immediately and report the actual and expected output.
+
+## Documentation and test-plan maintenance
+
+Keep contributor guidance in [docs/coding-standards.md](docs/coding-standards.md)
+and [docs/git-conventions.md](docs/git-conventions.md) aligned with the
+course standards. Keep [docs/README.md](docs/README.md) accurate when commands
+or user-visible behavior changes. Do not leave placeholder sections or
+machine-specific paths in committed documentation. Use descriptive Markdown
+links, fenced code blocks with a language identifier, and exact whitespace in
+console transcripts. Update [test/ui-test-plan.md](test/ui-test-plan.md) when
+console behavior changes.

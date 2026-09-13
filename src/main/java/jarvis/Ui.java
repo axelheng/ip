@@ -54,6 +54,38 @@ public class Ui {
         }
     }
 
+    /** Displays the confirmation for adding a task. */
+    void showTaskAdded(Task task, int taskCount) {
+        System.out.println("     Got it. I've added this task:");
+        System.out.println("       " + task);
+        System.out.println("     Now you have " + taskCount + " tasks in the list.");
+    }
+
+    /** Displays the confirmation for removing a task. */
+    void showTaskRemoved(Task task, int taskCount) {
+        System.out.println("     Noted. I've removed this task:");
+        System.out.println("       " + task);
+        System.out.println("     Now you have " + taskCount + " tasks in the list.");
+    }
+
+    /** Displays the confirmation for marking a task as done. */
+    void showTaskMarked(Task task) {
+        System.out.println("     Nice! I've marked this task as done:");
+        System.out.println("       [X] " + task.getDescription());
+    }
+
+    /** Displays the confirmation for marking a task as not done. */
+    void showTaskUnmarked(Task task) {
+        System.out.println("     OK, I've marked this task as not done yet:");
+        System.out.println("       [ ] " + task.getDescription());
+    }
+
+    /** Displays the confirmation for postponing a deadline. */
+    void showTaskSnoozed(int taskNumber, Deadline deadline) {
+        System.out.println("     Snoozed task " + taskNumber + " until " + deadline.getFormattedBy() + ":");
+        System.out.println("       " + deadline);
+    }
+
     /** Displays tasks whose descriptions contain the supplied keyword. */
     public void showMatchingTasks(List<Task> tasks, String keyword) {
         System.out.println("     Here are the matching tasks in your list:");

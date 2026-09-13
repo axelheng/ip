@@ -1,30 +1,41 @@
-# Jarvis User Guide
+# Jarvis user guide
 
-// Update the title above to match the actual product name
+Jarvis is a task-management chatbot with console and JavaFX interfaces. It
+stores tasks in `data/jarvis.txt` and supports the commands below.
 
-// Product screenshot goes here
+## Commands
 
-// Product intro goes here
+| Command | Example | Purpose |
+| --- | --- | --- |
+| `todo` | `todo read a book` | Adds a basic task. |
+| `deadline` | `deadline submit report /by 2026-09-20` | Adds a task with a due date. |
+| `event` | `event project meeting /from 2pm /to 3pm` | Adds a task with a time range. |
+| `list` | `list` | Displays all tasks. |
+| `find` | `find report` | Finds tasks containing a keyword. |
+| `mark` | `mark 1` | Marks task 1 as done. |
+| `unmark` | `unmark 1` | Marks task 1 as incomplete. |
+| `delete` | `delete 1` | Deletes task 1. |
+| `snooze` | `snooze 1 /by 2026-09-25` | Postpones a deadline. |
+| `bye` | `bye` | Saves the task list and exits. |
 
-## Adding deadlines
+Task numbers are one-based and follow the order shown by `list`. Invalid
+commands are reported without terminating the application.
 
-// Describe the action and its outcome.
+## Running Jarvis
 
-// Give examples of usage
+Use JDK 25. In IntelliJ, run `src/main/java/jarvis/Jarvis.java`. From the
+project root, the graphical interface can be started with:
 
-Example: `keyword (optional arguments)`
-
-// A description of the expected outcome goes here
-
+```sh
+./gradlew runGui
 ```
-expected output
-```
 
-## Feature ABC
+For the console interface, run the `Jarvis.main()` method in IntelliJ or use
+the Gradle/Java setup configured by the project.
 
-// Feature details
+## Keeping documentation and tests current
 
-
-## Feature XYZ
-
-// Feature details
+When a command or its visible output changes, update
+[`test/ui-test-plan.md`](../test/ui-test-plan.md) with the inputs and exact
+expected transcript. Follow the [Java coding standards](coding-standards.md)
+and [Git conventions](git-conventions.md) for all accompanying changes.
