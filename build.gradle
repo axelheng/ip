@@ -59,7 +59,7 @@ jar {
 }
 
 shadowJar {
-    archiveFileName = 'duke.jar'
+    archiveFileName = 'jarvis.jar'
 }
 
 run {
