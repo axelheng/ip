@@ -24,7 +24,7 @@ class UiTest {
 
         assertEquals("     Here are the tasks in your list:\n"
                 + "     1.[T][ ] first\n"
-                + "     2.[T][ ] second\n", output.toString());
+                + "     2.[T][ ] second\n", normalizeLineEndings(output));
     }
 
     @Test
@@ -56,6 +56,11 @@ class UiTest {
                 + "     OK, I've marked this task as not done yet:\n"
                 + "       [ ] read book\n"
                 + "     Snoozed task 1 until Sep 20 2026:\n"
-                + "       [D][ ] submit report (by: Sep 20 2026)\n", output.toString());
+                + "       [D][ ] submit report (by: Sep 20 2026)\n", normalizeLineEndings(output));
+    }
+
+    /** Returns captured output with platform-specific line endings normalized. */
+    private String normalizeLineEndings(ByteArrayOutputStream output) {
+        return output.toString().replace("\r\n", "\n");
     }
 }
