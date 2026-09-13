@@ -1,7 +1,10 @@
 # Jarvis user guide
 
-Jarvis is a task-management chatbot with console and JavaFX interfaces. It
-stores tasks in `data/jarvis.txt` and supports the commands below.
+Jarvis is a friendly task-management chatbot with console and JavaFX
+interfaces. It stores tasks in `data/jarvis.txt` and helps you capture,
+organise, and complete everyday tasks.
+
+![Jarvis graphical user interface](Ui.png)
 
 ## Commands
 
@@ -18,6 +21,10 @@ stores tasks in `data/jarvis.txt` and supports the commands below.
 | `snooze` | `snooze 1 /by 2026-09-25` | Postpones a deadline. |
 | `bye` | `bye` | Saves the task list and exits. |
 
+Tasks can be created as a `todo`, `deadline`, or `event`. Deadlines use
+`yyyy-mm-dd`; events use `/from ... /to ...`. Use `list` to see every task and
+its number before using `mark`, `unmark`, `delete`, or `snooze`.
+
 Task numbers are one-based and follow the order shown by `list`. Invalid
 commands are reported without terminating the application.
 
@@ -31,7 +38,24 @@ project root, the graphical interface can be started with:
 ```
 
 For the console interface, run the `Jarvis.main()` method in IntelliJ or use
-the Gradle/Java setup configured by the project.
+the Gradle/Java setup configured by the project. The graphical interface
+provides the same core task operations through a resizable window; enter a
+command in the field at the bottom and press Enter or click **Send**.
+
+## Typical workflow
+
+```text
+todo revise lecture notes
+deadline submit report /by 2026-09-20
+event project meeting /from 2pm /to 3pm
+list
+mark 1
+bye
+```
+
+Jarvis reports invalid commands and task numbers without closing the
+application. Changes are saved automatically by the graphical interface and
+when `bye` is used in the console interface.
 
 ## Keeping documentation and tests current
 

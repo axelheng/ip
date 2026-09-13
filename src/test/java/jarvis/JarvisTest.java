@@ -54,8 +54,7 @@ class JarvisTest {
 
     @Test
     void parseTaskNumber_zeroArgument_throwsJarvisException() {
-        assertThrows(JarvisException.class,
-                () -> Jarvis.parseTaskNumber("delete 0", "delete"));
+        assertThrows(JarvisException.class, () -> Jarvis.parseTaskNumber("delete 0", "delete"));
     }
 
     @Test
