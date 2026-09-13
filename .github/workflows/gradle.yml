@@ -29,5 +29,10 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
 
-      - name: Build and check with Gradle
+      - name: Build and check with Gradle (Unix)
+        if: matrix.platform != 'windows-latest'
         run: ./gradlew check
+
+      - name: Build and check with Gradle (Windows)
+        if: matrix.platform == 'windows-latest'
+        run: .\gradlew.bat check
