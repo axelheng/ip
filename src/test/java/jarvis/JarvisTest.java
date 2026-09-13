@@ -62,4 +62,25 @@ class JarvisTest {
     void parseTask_blankCommand_throwsJarvisException() {
         assertThrows(JarvisException.class, () -> Jarvis.parseTask("   "));
     }
+
+    @Test
+    void parseTask_invalidDeadlineDate_throwsJarvisException() {
+        JarvisException exception = assertThrows(JarvisException.class, () ->
+                Jarvis.parseTask("deadline report /by 2026-02-30"));
+
+        assertEquals("A deadline date must use yyyy-mm-dd, for example: 2019-10-15",
+                exception.getMessage());
+    }
+
+    @Test
+    void parseTask_eventWithMissingTime_throwsJarvisException() {
+        assertThrows(JarvisException.class, () ->
+                Jarvis.parseTask("event meeting /from 2pm /to"));
+    }
+
+    @Test
+    void parseTask_deadlineWithEmptyDescription_throwsJarvisException() {
+        assertThrows(JarvisException.class, () ->
+                Jarvis.parseTask("deadline /by 2026-09-20"));
+    }
 }

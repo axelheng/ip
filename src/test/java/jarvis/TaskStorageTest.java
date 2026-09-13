@@ -53,4 +53,27 @@ class TaskStorageTest {
         assertEquals("submit report", loadedTasks.get(1).getDescription());
         assertEquals("project meeting", loadedTasks.get(2).getDescription());
     }
+
+    @Test
+    void load_invalidDateRecord_ignoresRecordAndKeepsValidTasks() throws IOException {
+        Path dataFile = temporaryDirectory.resolve("jarvis.txt");
+        Files.write(dataFile, List.of(
+                "D | 0 | invalid date | 2026-02-30",
+                "T | 0 | valid task"), StandardCharsets.UTF_8);
+        TaskStorage storage = new TaskStorage(dataFile);
+
+        List<Task> loadedTasks = storage.load();
+
+        assertEquals(1, loadedTasks.size());
+        assertEquals("valid task", loadedTasks.get(0).getDescription());
+    }
+
+    @Test
+    void load_emptyFile_returnsEmptyTaskList() throws IOException {
+        Path dataFile = temporaryDirectory.resolve("jarvis.txt");
+        Files.createFile(dataFile);
+        TaskStorage storage = new TaskStorage(dataFile);
+
+        assertEquals(List.of(), storage.load());
+    }
 }
