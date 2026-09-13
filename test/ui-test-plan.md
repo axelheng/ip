@@ -100,6 +100,47 @@ Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
 
+## Reject duplicate tasks
+
+**Aim:** Verify that adding the same task twice is rejected without changing the task list.
+
+**Command:**
+```sh
+repo_root="$(pwd)" && test -d "$repo_root/build/classes/java/main" && test -d "$repo_root/build/resources/main" && cd "$(mktemp -d)" && java -cp "$repo_root/build/classes/java/main:$repo_root/build/resources/main" jarvis.Jarvis
+```
+
+**Inputs:**
+```text
+todo read book
+todo read book
+list
+bye
+```
+
+**Expected output:**
+```text
+____________________________________________________________
+Jarvis
+Hello! I'm Jarvis.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+     Got it. I've added this task:
+       [T][ ] read book
+     Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+     Oops: That task is already in your list.
+____________________________________________________________
+____________________________________________________________
+     Here are the tasks in your list:
+     1.[T][ ] read book
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
 ### JavaFX graphical interface smoke test
 
 **Aim:** Verify that the JavaFX interface starts, displays saved tasks, accepts a command, and refreshes the task list.

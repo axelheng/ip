@@ -35,7 +35,7 @@ public class Jarvis {
         List<Task> tasks = storage.load();
 
         while (ui.hasNextCommand()) {
-            String command = ui.readCommand();
+            String command = ui.readCommand().trim();
             ui.showSeparator();
 
             if (command.equals(BYE_COMMAND)) {
@@ -161,9 +161,18 @@ public class Jarvis {
     private static void handleCreate(String command, List<Task> tasks, Ui ui, TaskStorage storage)
             throws JarvisException {
         Task task = parseTask(command);
+        if (tasks.stream().anyMatch(existing -> isDuplicate(existing, task))) {
+            throw new JarvisException("That task is already in your list.");
+        }
         tasks.add(task);
         storage.save(tasks);
         ui.showTaskAdded(task, tasks.size());
+    }
+
+    /** Returns whether two tasks have the same type and description. */
+    private static boolean isDuplicate(Task first, Task second) {
+        return first.getClass().equals(second.getClass())
+                && first.getDescription().equalsIgnoreCase(second.getDescription());
     }
 
     /** Returns the zero-based index for a validated task-list action. */
@@ -248,7 +257,11 @@ public class Jarvis {
             throw new JarvisException("Please provide a task number after " + action + ".");
         }
         try {
-            return Integer.parseInt(taskNumberText);
+            int taskNumber = Integer.parseInt(taskNumberText);
+            if (taskNumber < 1) {
+                throw new JarvisException("Task number must be positive.");
+            }
+            return taskNumber;
         } catch (NumberFormatException exception) {
             throw new JarvisException("Please provide a valid task number after " + action + ".");
         }

@@ -51,4 +51,15 @@ class JarvisTest {
 
         assertEquals("Please provide a valid task number after delete.", exception.getMessage());
     }
+
+    @Test
+    void parseTaskNumber_zeroArgument_throwsJarvisException() {
+        assertThrows(JarvisException.class,
+                () -> Jarvis.parseTaskNumber("delete 0", "delete"));
+    }
+
+    @Test
+    void parseTask_blankCommand_throwsJarvisException() {
+        assertThrows(JarvisException.class, () -> Jarvis.parseTask("   "));
+    }
 }

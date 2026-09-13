@@ -62,7 +62,7 @@ public class TaskStorage {
     }
 
     /** Saves the current tasks, creating the data directory when necessary. */
-    public void save(List<Task> tasks) {
+    public void save(List<Task> tasks) throws JarvisException {
         try {
             Path parent = dataFile.getParent();
             if (parent != null) {
@@ -74,7 +74,7 @@ public class TaskStorage {
             }
             Files.write(dataFile, lines, StandardCharsets.UTF_8);
         } catch (IOException exception) {
-            // A storage failure should not terminate the chatbot.
+            throw new JarvisException("I couldn't save your tasks. Check that the data file is writable.");
         }
     }
 

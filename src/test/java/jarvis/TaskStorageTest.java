@@ -18,7 +18,7 @@ class TaskStorageTest {
     Path temporaryDirectory;
 
     @Test
-    void saveAndLoad_typedTasks_preservesTaskData() {
+    void saveAndLoad_typedTasks_preservesTaskData() throws JarvisException {
         TaskStorage storage = new TaskStorage(temporaryDirectory.resolve("jarvis.txt"));
         Todo todo = new Todo("read book");
         Deadline deadline = new Deadline("submit report", LocalDate.of(2026, 9, 20));
