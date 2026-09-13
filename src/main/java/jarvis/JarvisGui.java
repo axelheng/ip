@@ -38,6 +38,8 @@ public class JarvisGui extends Application {
     private final TextArea conversation = new TextArea();
     /** Shows all saved tasks. */
     private final ListView<Task> taskList = new ListView<>(tasks);
+    /** Shows the number of tasks currently stored. */
+    private final Label taskCount = new Label();
     /** Accepts the next command from the user. */
     private final TextField commandInput = new TextField();
 
@@ -45,6 +47,7 @@ public class JarvisGui extends Application {
     @Override
     public void start(Stage stage) {
         tasks.addAll(storage.load());
+        updateTaskCount();
 
         configureConversation();
         configureTaskList();
@@ -59,6 +62,8 @@ public class JarvisGui extends Application {
         scene.getStylesheets().add(getClass().getResource("/jarvis.css").toExternalForm());
         stage.setScene(scene);
         stage.setTitle("Jarvis");
+        stage.setMinWidth(720);
+        stage.setMinHeight(480);
         stage.show();
     }
 
@@ -118,6 +123,9 @@ public class JarvisGui extends Application {
         Label tasksTitle = new Label("Your tasks");
         tasksTitle.getStyleClass().add("section-title");
         VBox rightPane = new VBox(PANE_SPACING, tasksTitle, taskList);
+        taskCount.getStyleClass().add("task-count");
+        updateTaskCount();
+        rightPane.getChildren().add(1, taskCount);
         rightPane.setPadding(new Insets(PADDING, PADDING, PADDING, 0));
         VBox.setVgrow(taskList, Priority.ALWAYS);
         return rightPane;
@@ -137,7 +145,15 @@ public class JarvisGui extends Application {
             conversation.appendText("Jarvis: " + response + "\n");
         }
         conversation.appendText("\n");
+        conversation.pseudoClassStateChanged(javafx.css.PseudoClass.getPseudoClass("error"),
+                responses.stream().anyMatch(response -> response.startsWith("Oops:")));
+        updateTaskCount();
         taskList.refresh();
+    }
+
+    /** Refreshes the task count shown above the task list. */
+    private void updateTaskCount() {
+        taskCount.setText(tasks.size() + (tasks.size() == 1 ? " task" : " tasks"));
     }
 
     /** Processes one command and returns the messages that belong in the conversation. */
