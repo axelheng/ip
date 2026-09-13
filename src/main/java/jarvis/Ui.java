@@ -86,13 +86,9 @@ public class Ui {
         System.out.println("       " + deadline);
     }
 
-    /** Displays tasks whose descriptions contain the supplied keyword. */
-    public void showMatchingTasks(List<Task> tasks, String keyword) {
+    /** Displays tasks whose descriptions match the supplied search. */
+    public void showMatchingTasks(List<Task> matchingTasks) {
         System.out.println("     Here are the matching tasks in your list:");
-        String lowerCaseKeyword = keyword.toLowerCase();
-        List<Task> matchingTasks = tasks.stream()
-                .filter(task -> task.getDescription().toLowerCase().contains(lowerCaseKeyword))
-                .toList();
         IntStream.range(0, matchingTasks.size())
                 .forEach(index -> System.out.println("     " + (index + 1) + "." + matchingTasks.get(index)));
     }

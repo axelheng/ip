@@ -58,6 +58,49 @@ ____________________________________________________________
 
 Add one `##` section per console UI test. Tests run in document order and stop at the first failure.
 
+## Find matching tasks
+
+**Aim:** Verify that `find` displays only tasks whose descriptions contain the requested keyword.
+
+**Command:**
+```sh
+repo_root="$(pwd)" && test -d "$repo_root/build/classes/java/main" && test -d "$repo_root/build/resources/main" && cd "$(mktemp -d)" && java -cp "$repo_root/build/classes/java/main:$repo_root/build/resources/main" jarvis.Jarvis
+```
+
+**Inputs:**
+```text
+todo read book
+todo submit report
+find report
+bye
+```
+
+**Expected output:**
+```text
+____________________________________________________________
+Jarvis
+Hello! I'm Jarvis.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+     Got it. I've added this task:
+       [T][ ] read book
+     Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+     Got it. I've added this task:
+       [T][ ] submit report
+     Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+     Here are the matching tasks in your list:
+     1.[T][ ] submit report
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
 ## Snooze a deadline
 
 **Aim:** Verify that a deadline can be postponed and displayed with its new date.
@@ -143,17 +186,21 @@ ____________________________________________________________
 
 ### JavaFX graphical interface smoke test
 
-**Aim:** Verify that the JavaFX interface starts, displays saved tasks, accepts a command, and refreshes the task list.
+**Aim:** Verify that the JavaFX interface starts, accepts task commands, handles search and snooze, rejects duplicates, and refreshes the task list.
 
 **Command:**
 ```sh
 ./gradlew runGui
 ```
 
-**Inputs:** In the graphical window, enter `todo graphical task`, press Enter, then enter `mark 1`.
+**Inputs:** In the graphical window, enter `todo graphical task`, then
+`deadline graphical report /by 2026-09-20`, `find graphical`,
+`snooze <number of graphical report> /by 2026-09-25`, enter the same todo command again,
+and finally `mark <number of graphical task>`. Use the task numbers shown in the `Your tasks` panel.
 
-**Expected output:** The conversation shows the added task and the marked task, and the `Your tasks` panel displays
-`1. [T][X] graphical task`. Close the window after the smoke test.
+**Expected output:** The conversation shows the matching graphical tasks, the snoozed deadline with its new date,
+and an error explaining that the duplicate task is already in the list. The marked graphical task is displayed as
+`[T][X]` in the `Your tasks` panel. Close the window after the smoke test.
 
 This test requires a desktop environment and is run manually because the automated console test runner cannot interact
 with JavaFX windows.

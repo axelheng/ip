@@ -99,10 +99,7 @@ public class Jarvis {
     /** Displays all tasks whose descriptions contain the requested keyword. */
     private static void handleFind(String command, List<Task> tasks, Ui ui) throws JarvisException {
         String keyword = command.substring(FIND_COMMAND.length()).trim();
-        if (keyword.isEmpty()) {
-            throw new JarvisException("Please provide a keyword after find.");
-        }
-        ui.showMatchingTasks(tasks, keyword);
+        ui.showMatchingTasks(findMatchingTasks(tasks, keyword));
     }
 
     /** Deletes the selected task and persists the updated task list. */
@@ -136,6 +133,18 @@ public class Jarvis {
     /** Postpones a deadline task and persists the new date. */
     private static void handleSnooze(String command, List<Task> tasks, Ui ui, TaskStorage storage)
             throws JarvisException {
+        int taskIndex = snoozeTask(command, tasks);
+        Deadline deadline = (Deadline) tasks.get(taskIndex);
+        storage.save(tasks);
+        ui.showTaskSnoozed(taskIndex + 1, deadline);
+    }
+
+    /**
+     * Updates a deadline task with a validated snooze date.
+     *
+     * @return the zero-based index of the snoozed task.
+     */
+    static int snoozeTask(String command, List<Task> tasks) throws JarvisException {
         String remainder = command.substring(SNOOZE_COMMAND.length()).trim();
         int byIndex = remainder.indexOf(BY_DELIMITER);
         if (byIndex < 0) {
@@ -153,8 +162,7 @@ public class Jarvis {
             throw new JarvisException("Only deadline tasks can be snoozed.");
         }
         deadline.snoozeUntil(newDate);
-        storage.save(tasks);
-        ui.showTaskSnoozed(taskIndex + 1, deadline);
+        return taskIndex;
     }
 
     /** Creates a task from the command and persists the updated task list. */
@@ -170,9 +178,21 @@ public class Jarvis {
     }
 
     /** Returns whether two tasks have the same type and description. */
-    private static boolean isDuplicate(Task first, Task second) {
+    static boolean isDuplicate(Task first, Task second) {
         return first.getClass().equals(second.getClass())
                 && first.getDescription().equalsIgnoreCase(second.getDescription());
+    }
+
+    /** Returns tasks whose descriptions contain the requested keyword. */
+    static List<Task> findMatchingTasks(List<Task> tasks, String keyword) throws JarvisException {
+        String trimmedKeyword = keyword.trim();
+        if (trimmedKeyword.isEmpty()) {
+            throw new JarvisException("Please provide a keyword after find.");
+        }
+        String lowerCaseKeyword = trimmedKeyword.toLowerCase();
+        return tasks.stream()
+                .filter(task -> task.getDescription().toLowerCase().contains(lowerCaseKeyword))
+                .toList();
     }
 
     /** Returns the zero-based index for a validated task-list action. */

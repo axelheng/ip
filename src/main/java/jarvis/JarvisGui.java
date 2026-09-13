@@ -1,5 +1,6 @@
 package jarvis;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javafx.application.Application;
@@ -23,6 +24,13 @@ import javafx.stage.Stage;
 
 /** Provides a JavaFX graphical interface for the Jarvis chatbot. */
 public class JarvisGui extends Application {
+    private static final String BYE_COMMAND = "bye";
+    private static final String DELETE_COMMAND = "delete";
+    private static final String FIND_COMMAND = "find";
+    private static final String LIST_COMMAND = "list";
+    private static final String MARK_COMMAND = "mark";
+    private static final String SNOOZE_COMMAND = "snooze";
+    private static final String UNMARK_COMMAND = "unmark";
     private static final int COMMAND_BAR_SPACING = 10;
     private static final int HEADER_SPACING = 2;
     private static final int PANE_SPACING = 10;
@@ -159,20 +167,23 @@ public class JarvisGui extends Application {
     /** Processes one command and returns the messages that belong in the conversation. */
     private List<String> processCommand(String command) {
         try {
-            if (command.equals("bye")) {
+            if (command.equals(BYE_COMMAND)) {
                 return List.of("Bye. Hope to see you again soon!");
             }
-            if (command.equals("list")) {
+            if (command.equals(LIST_COMMAND)) {
                 return processListCommand();
             }
-            if (command.equals("find") || command.startsWith("find ")) {
+            if (isCommand(command, FIND_COMMAND)) {
                 return processFindCommand(command);
             }
-            if (command.startsWith("delete")) {
+            if (isCommand(command, DELETE_COMMAND)) {
                 return processDeleteCommand(command);
             }
-            if (command.startsWith("mark") || command.startsWith("unmark")) {
+            if (isCommand(command, MARK_COMMAND) || isCommand(command, UNMARK_COMMAND)) {
                 return processStatusCommand(command);
+            }
+            if (isCommand(command, SNOOZE_COMMAND)) {
+                return processSnoozeCommand(command);
             }
             return processCreateCommand(command);
         } catch (JarvisException exception) {
@@ -190,16 +201,22 @@ public class JarvisGui extends Application {
 
     /** Returns the response for a find command after validating its keyword. */
     private List<String> processFindCommand(String command) throws JarvisException {
-        String keyword = command.substring("find".length()).trim();
-        if (keyword.isEmpty()) {
-            throw new JarvisException("Please provide a keyword after find.");
+        String keyword = command.substring(FIND_COMMAND.length()).trim();
+        List<Task> matchingTasks = Jarvis.findMatchingTasks(tasks, keyword);
+        if (matchingTasks.isEmpty()) {
+            return List.of("No matching tasks found.");
         }
-        return List.of("Searching for: " + keyword);
+        List<String> responses = new ArrayList<>();
+        responses.add("Here are the matching tasks in your list:");
+        for (int index = 0; index < matchingTasks.size(); index++) {
+            responses.add((index + 1) + ". " + matchingTasks.get(index));
+        }
+        return responses;
     }
 
     /** Deletes the selected GUI task and returns the confirmation message. */
     private List<String> processDeleteCommand(String command) throws JarvisException {
-        int taskNumber = Jarvis.parseTaskNumber(command, "delete");
+        int taskNumber = Jarvis.parseTaskNumber(command, DELETE_COMMAND);
         if (taskNumber < 1 || taskNumber > tasks.size()) {
             throw new JarvisException("There is no task with that number.");
         }
@@ -208,15 +225,24 @@ public class JarvisGui extends Application {
         return List.of("Removed: " + removedTask);
     }
 
+    /** Snoozes a deadline task and returns the confirmation message. */
+    private List<String> processSnoozeCommand(String command) throws JarvisException {
+        int taskIndex = Jarvis.snoozeTask(command, tasks);
+        Deadline deadline = (Deadline) tasks.get(taskIndex);
+        storage.save(tasks);
+        return List.of("Snoozed task " + (taskIndex + 1) + " until "
+                + deadline.getFormattedBy() + ": " + deadline);
+    }
+
     /** Updates a GUI task's completion status and returns the confirmation message. */
     private List<String> processStatusCommand(String command) throws JarvisException {
-        String action = command.startsWith("mark") ? "mark" : "unmark";
+        String action = isCommand(command, MARK_COMMAND) ? MARK_COMMAND : UNMARK_COMMAND;
         int taskNumber = Jarvis.parseTaskNumber(command, action);
         if (taskNumber < 1 || taskNumber > tasks.size()) {
             throw new JarvisException("There is no task with that number.");
         }
         Task task = tasks.get(taskNumber - 1);
-        if (action.equals("mark")) {
+        if (action.equals(MARK_COMMAND)) {
             task.markAsDone();
         } else {
             task.markAsNotDone();
@@ -228,9 +254,17 @@ public class JarvisGui extends Application {
     /** Creates a GUI task and returns the confirmation message. */
     private List<String> processCreateCommand(String command) throws JarvisException {
         Task task = Jarvis.parseTask(command);
+        if (tasks.stream().anyMatch(existing -> Jarvis.isDuplicate(existing, task))) {
+            throw new JarvisException("That task is already in your list.");
+        }
         tasks.add(task);
         storage.save(tasks);
         return List.of("Added: " + task);
+    }
+
+    /** Returns whether a command is an action alone or an action with arguments. */
+    private boolean isCommand(String command, String commandName) {
+        return command.equals(commandName) || command.startsWith(commandName + " ");
     }
 
     /** Returns the numbered text displayed for one task. */
